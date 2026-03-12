@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Corporate Activity Tracker</title>
+  <meta name="description" content="Corporate Activity Tracker: explore and download high-frequency corporate accounting series.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js" defer></script>
+  <style>
+    :root {
+      --ink: #0f1c2a;
+      --ink-soft: #44566b;
+      --line: #d6dde6;
+      --bg: #f5f8fb;
+      --card: #ffffff;
+      --brand: #0b3c5d;
+      --brand-soft: #2f5f80;
+      --accent: #0f766e;
+      --radius: 14px;
+      --shadow: 0 14px 36px rgba(8, 22, 38, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: "Manrope", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(600px 280px at 0% 0%, rgba(11, 60, 93, 0.08), transparent 60%),
+        radial-gradient(650px 300px at 100% 0%, rgba(15, 118, 110, 0.08), transparent 60%),
+        var(--bg);
+      line-height: 1.55;
+    }
+
+    .container {
+      width: min(1140px, calc(100% - 2rem));
+      margin: 0 auto;
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 60;
+      backdrop-filter: blur(10px);
+      background: rgba(245, 248, 251, 0.86);
+      border-bottom: 1px solid rgba(148, 163, 184, 0.32);
+    }
+
+    .site-header .container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      padding: 1rem 0 0.85rem;
+    }
+
+    .brand {
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      color: var(--ink);
+      text-decoration: none;
+      font-size: clamp(1.28rem, 1.05rem + 0.8vw, 1.7rem);
+      text-transform: uppercase;
+      text-align: center;
+    }
+
+    .brand span {
+      color: var(--accent);
+    }
+
+    .hero {
+      padding: 3.2rem 0 2rem;
+    }
+
+    .hero-card {
+      background: linear-gradient(145deg, #ffffff 5%, #f2f7fc 92%);
+      border: 1px solid rgba(148, 163, 184, 0.34);
+      border-radius: calc(var(--radius) + 4px);
+      box-shadow: var(--shadow);
+      padding: 1.8rem;
+      display: grid;
+      gap: 1.1rem;
+    }
+
+    .hero-card h1,
+    .section-title {
+      font-family: "Fraunces", serif;
+      line-height: 1.2;
+      letter-spacing: -0.01em;
+    }
+
+    .hero-card h1 {
+      font-size: clamp(2.3rem, 1.65rem + 2.8vw, 3.45rem);
+      color: var(--brand);
+    }
+
+    .hero-card p {
+      max-width: none;
+      color: var(--ink-soft);
+      font-size: 1rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 0.55rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 700;
+      padding: 0.62rem 0.95rem;
+      border-radius: 11px;
+      border: 1px solid transparent;
+      transition: 0.16s ease;
+      cursor: pointer;
+    }
+
+    .btn.primary {
+      background: var(--brand);
+      color: #ffffff;
+    }
+
+    .btn.primary:hover {
+      background: #113f62;
+    }
+
+    .btn.secondary {
+      background: #ffffff;
+      color: var(--brand);
+      border-color: rgba(11, 60, 93, 0.35);
+    }
+
+    .btn.secondary:hover {
+      border-color: rgba(11, 60, 93, 0.6);
+      background: #f7fbff;
+    }
+
+    section {
+      padding: 1rem 0 2rem;
+    }
+
+    .section-title {
+      font-size: clamp(1.45rem, 1.12rem + 1vw, 1.95rem);
+      margin-bottom: 0.3rem;
+      color: var(--brand);
+    }
+
+    .section-subtitle {
+      color: var(--ink-soft);
+      margin-bottom: 1.1rem;
+      max-width: 76ch;
+      font-size: 0.95rem;
+    }
+
+    .authors-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.75rem;
+    }
+
+    .author-card {
+      background: var(--card);
+      border: 1px solid rgba(148, 163, 184, 0.38);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    .author-photo {
+      height: 340px;
+      background: linear-gradient(140deg, #dde9f4, #d7efe9);
+      display: grid;
+      place-items: center;
+      position: relative;
+    }
+
+    .author-photo img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+    }
+
+    .fallback-initials {
+      width: 54px;
+      height: 54px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.86);
+      color: var(--brand);
+      font-weight: 700;
+      font-size: 1rem;
+      display: grid;
+      place-items: center;
+    }
+
+    .author-body {
+      padding: 0.8rem 0.85rem 0.95rem;
+    }
+
+    .author-body h3 {
+      font-size: 0.98rem;
+      margin-bottom: 0.05rem;
+    }
+
+    .author-body p {
+      color: var(--ink-soft);
+      font-size: 0.86rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .author-body a {
+      color: var(--brand);
+      text-decoration: none;
+      font-size: 0.84rem;
+      font-weight: 700;
+    }
+
+    .author-body a:hover {
+      text-decoration: underline;
+    }
+
+    .explorer-card {
+      background: var(--card);
+      border: 1px solid rgba(148, 163, 184, 0.38);
+      border-radius: calc(var(--radius) + 2px);
+      box-shadow: var(--shadow);
+      padding: 1rem;
+    }
+
+    .explorer-controls {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 0.65rem;
+      margin-bottom: 0.9rem;
+      align-items: center;
+    }
+
+    #searchInput {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: #fdfefe;
+      border-radius: 10px;
+      padding: 0.62rem 0.72rem;
+      font: inherit;
+      font-size: 0.9rem;
+      color: var(--ink);
+    }
+
+    #searchInput:focus {
+      outline: 2px solid rgba(11, 60, 93, 0.2);
+      border-color: rgba(11, 60, 93, 0.5);
+    }
+
+    .category-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      justify-content: flex-end;
+    }
+
+    .chip {
+      border: 1px solid var(--line);
+      background: #ffffff;
+      color: var(--ink-soft);
+      border-radius: 999px;
+      padding: 0.44rem 0.64rem;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .chip.active {
+      background: rgba(11, 60, 93, 0.1);
+      color: var(--brand);
+      border-color: rgba(11, 60, 93, 0.35);
+    }
+
+    .explorer-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.85rem;
+      align-items: start;
+    }
+
+    .series-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.55rem;
+      max-height: 660px;
+      overflow: auto;
+      padding-right: 0.2rem;
+    }
+
+    .series-grid::-webkit-scrollbar {
+      width: 9px;
+    }
+
+    .series-grid::-webkit-scrollbar-thumb {
+      background: #c5d0dc;
+      border-radius: 20px;
+    }
+
+    .series-card {
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      background: #ffffff;
+      text-align: left;
+      padding: 0.58rem;
+      display: grid;
+      gap: 0.32rem;
+      cursor: pointer;
+      transition: 0.15s ease;
+    }
+
+    .series-card:hover {
+      border-color: rgba(11, 60, 93, 0.5);
+    }
+
+    .series-card.active {
+      border-color: rgba(11, 60, 93, 0.75);
+      box-shadow: 0 0 0 2px rgba(11, 60, 93, 0.15);
+      background: #f9fcff;
+    }
+
+    .series-name {
+      font-size: 0.84rem;
+      line-height: 1.28;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .series-file {
+      font-size: 0.74rem;
+      color: var(--ink-soft);
+      letter-spacing: 0.01em;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+
+    .sparkline {
+      width: 100%;
+      height: 34px;
+      border-radius: 8px;
+      background: #f7fafc;
+      display: block;
+    }
+
+    .series-empty {
+      grid-column: 1 / -1;
+      border: 1px dashed var(--line);
+      border-radius: 12px;
+      padding: 0.9rem;
+      color: var(--ink-soft);
+      font-size: 0.9rem;
+    }
+
+    .focus-panel {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #ffffff;
+      padding: 0.85rem;
+      position: sticky;
+      top: 86px;
+    }
+
+    .focus-head {
+      margin-bottom: 0.6rem;
+    }
+
+    .focus-head h3 {
+      font-size: 1.03rem;
+      line-height: 1.35;
+      margin-bottom: 0.08rem;
+    }
+
+    .focus-head p {
+      color: var(--ink-soft);
+      font-size: 0.83rem;
+    }
+
+    #mainChart {
+      width: 100%;
+      min-height: 370px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      overflow: hidden;
+      background: #fcfdff;
+    }
+
+    .chart-loading {
+      display: grid;
+      place-items: center;
+      color: var(--ink-soft);
+      font-size: 0.9rem;
+    }
+
+    .stats-grid {
+      margin-top: 0.65rem;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.45rem;
+    }
+
+    .stat {
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: #fbfdff;
+      padding: 0.45rem;
+    }
+
+    .stat-label {
+      font-size: 0.72rem;
+      color: var(--ink-soft);
+      margin-bottom: 0.06rem;
+      display: block;
+    }
+
+    .stat-value {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .focus-actions {
+      display: flex;
+      gap: 0;
+      margin-top: 0.65rem;
+    }
+
+    .focus-actions .btn {
+      width: 100%;
+      padding: 0.55rem 0.75rem;
+      font-size: 0.84rem;
+    }
+
+    footer {
+      margin-top: 0.9rem;
+      padding: 1.4rem 0 2rem;
+      border-top: 1px solid rgba(148, 163, 184, 0.35);
+      color: var(--ink-soft);
+      font-size: 0.88rem;
+    }
+
+    .footer-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 1020px) {
+      .authors-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .explorer-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .focus-panel {
+        position: static;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .container {
+        width: min(1140px, calc(100% - 1.2rem));
+      }
+
+      .hero {
+        padding-top: 2.6rem;
+      }
+
+      .hero-card {
+        padding: 1.2rem;
+      }
+
+      .authors-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .explorer-controls {
+        grid-template-columns: 1fr;
+      }
+
+      .category-row {
+        justify-content: flex-start;
+      }
+
+      .series-grid {
+        grid-template-columns: 1fr;
+        max-height: 460px;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      #mainChart {
+        min-height: 320px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="#top">Corporate <span>Activity Tracker</span></a>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero" id="about">
+      <div class="container">
+        <div class="hero-card">
+          <h1>Daily Signals from Corporate 10-Q Filings</h1>
+          <p>
+            The Corporate Activity Tracker transforms firm-level quarterly filings into daily indicators of macroeconomic conditions.
+            Our framework compares each announcement to the same fiscal quarter one year earlier and aggregates information through a rolling
+            window to reduce firm-specific noise and shifts in who reports on a given day. This helps separate leading signals such as liquidity
+            and debt dynamics from variables that tend to lag the cycle, giving researchers and practitioners a transparent view of how corporate
+            fundamentals move around recessions and recoveries.
+          </p>
+          <div class="hero-actions">
+            <a class="btn primary" href="Data_All.zip" download>Download Data</a>
+            <a class="btn secondary" href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4922676" target="_blank" rel="noopener noreferrer">Read Paper</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="explorer">
+      <div class="container">
+        <h2 class="section-title">Variable Explorer</h2>
+        <p class="section-subtitle">
+          Click a variable to inspect the time series, zoom in interactively, and download that specific CSV.
+        </p>
+
+        <div class="explorer-card">
+          <div class="explorer-controls">
+            <input id="searchInput" type="search" placeholder="Search variable name...">
+            <div class="category-row" id="categoryRow">
+              <button type="button" class="chip active" data-category="All">All</button>
+              <button type="button" class="chip" data-category="Fundamentals">Fundamentals</button>
+              <button type="button" class="chip" data-category="Ratios">Ratios</button>
+            </div>
+          </div>
+
+          <div class="explorer-layout">
+            <div class="series-grid" id="seriesGrid" aria-live="polite"></div>
+
+            <aside class="focus-panel">
+              <div class="focus-head">
+                <h3 id="focusName">Loading variable...</h3>
+                <p id="focusMeta">Select a series to inspect details.</p>
+              </div>
+
+              <div id="mainChart" class="chart-loading">Loading chart...</div>
+
+              <div class="stats-grid">
+                <div class="stat">
+                  <span class="stat-label">Start</span>
+                  <span class="stat-value" id="statStart">-</span>
+                </div>
+                <div class="stat">
+                  <span class="stat-label">End</span>
+                  <span class="stat-value" id="statEnd">-</span>
+                </div>
+                <div class="stat">
+                  <span class="stat-label">Latest</span>
+                  <span class="stat-value" id="statLatest">-</span>
+                </div>
+                <div class="stat">
+                  <span class="stat-label">Observations</span>
+                  <span class="stat-value" id="statCount">-</span>
+                </div>
+              </div>
+
+              <div class="focus-actions">
+                <a id="downloadSeriesBtn" class="btn primary" href="#" download>Download This Series</a>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="authors">
+      <div class="container">
+        <h2 class="section-title">Authors</h2>
+        <div class="authors-grid">
+          <article class="author-card">
+            <div class="author-photo">
+              <span class="fallback-initials" aria-hidden="true">DP</span>
+              <img src="Photos/DavidePettenuzzo.jpg" alt="Davide Pettenuzzo" loading="lazy" onerror="this.remove();">
+            </div>
+            <div class="author-body">
+              <h3>Davide Pettenuzzo</h3>
+              <p>Brandeis University</p>
+              <a href="mailto:dpettenu@brandeis.edu">dpettenu@brandeis.edu</a>
+            </div>
+          </article>
+
+          <article class="author-card">
+            <div class="author-photo">
+              <span class="fallback-initials" aria-hidden="true">RS</span>
+              <img src="Photos/RiccardoSabbatucci.jpg" alt="Riccardo Sabbatucci" loading="lazy" onerror="this.remove();">
+            </div>
+            <div class="author-body">
+              <h3>Riccardo Sabbatucci</h3>
+              <p>Stockholm School of Economics</p>
+              <a href="mailto:riccardo.sabbatucci@hhs.se">riccardo.sabbatucci@hhs.se</a>
+            </div>
+          </article>
+
+          <article class="author-card">
+            <div class="author-photo">
+              <span class="fallback-initials" aria-hidden="true">AT</span>
+              <img src="Photos/AllanTimmermann.jpg" alt="Allan Timmermann" loading="lazy" onerror="this.remove();">
+            </div>
+            <div class="author-body">
+              <h3>Allan Timmermann</h3>
+              <p>UC San Diego</p>
+              <a href="mailto:atimmermann@ucsd.edu">atimmermann@ucsd.edu</a>
+            </div>
+          </article>
+
+          <article class="author-card">
+            <div class="author-photo">
+              <span class="fallback-initials" aria-hidden="true">LV</span>
+              <img src="Photos/LukaVulicevic%20MED.jpg" alt="Luka Vulicevic" loading="lazy" onerror="this.remove();">
+            </div>
+            <div class="author-body">
+              <h3>Luka Vulicevic</h3>
+              <p>UC San Diego</p>
+              <a href="mailto:lvulicevic@ucsd.edu">lvulicevic@ucsd.edu</a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-meta">
+        <p>&copy; <span id="yearText">2026</span> Corporate Activity Tracker</p>
+        <p id="updatedText">Updated</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="caba_data.js"></script>
+  <script>
+    const BUNDLE = window.CABA_DATA || { meta: [], seriesData: {} };
+    const SERIES = Array.isArray(BUNDLE.meta) ? BUNDLE.meta : [];
+    const SERIES_DATA = BUNDLE.seriesData && typeof BUNDLE.seriesData === "object" ? BUNDLE.seriesData : {};
+
+    const cache = new Map();
+    const seriesGrid = document.getElementById("seriesGrid");
+    const searchInput = document.getElementById("searchInput");
+    const chips = Array.from(document.querySelectorAll(".chip"));
+    const focusName = document.getElementById("focusName");
+    const focusMeta = document.getElementById("focusMeta");
+    const chartNode = document.getElementById("mainChart");
+    const statStart = document.getElementById("statStart");
+    const statEnd = document.getElementById("statEnd");
+    const statLatest = document.getElementById("statLatest");
+    const statCount = document.getElementById("statCount");
+    const downloadSeriesBtn = document.getElementById("downloadSeriesBtn");
+
+    let activeCategory = "All";
+    let searchTerm = "";
+    let activeId = SERIES.length ? SERIES[0].id : "";
+    let selectionNonce = 0;
+
+    function escapeHtml(value) {
+      const text = String(value ?? "");
+      return text
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll("\"", "&quot;");
+    }
+
+    function formatDate(dateText) {
+      const date = new Date(`${dateText}T00:00:00Z`);
+      if (Number.isNaN(date.getTime())) return dateText;
+      return date.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
+    }
+
+    function formatValue(value) {
+      if (!Number.isFinite(value)) return "-";
+      if (Math.abs(value) >= 1000) return value.toLocaleString("en-US", { maximumFractionDigits: 2 });
+      if (Math.abs(value) >= 1) return value.toLocaleString("en-US", { maximumFractionDigits: 4 });
+      return value.toLocaleString("en-US", { maximumFractionDigits: 6 });
+    }
+
+    function downsample(rows, maxPoints) {
+      if (rows.length <= maxPoints) return rows;
+      const sampled = [];
+      const step = (rows.length - 1) / (maxPoints - 1);
+      for (let i = 0; i < maxPoints; i += 1) {
+        sampled.push(rows[Math.round(i * step)]);
+      }
+      return sampled;
+    }
+
+    function loadSeries(meta) {
+      if (cache.has(meta.id)) return cache.get(meta.id);
+      const entry = SERIES_DATA[meta.id];
+      if (!entry || !Array.isArray(entry.rows) || entry.rows.length === 0) {
+        throw new Error(`Series data not found for ${meta.id}`);
+      }
+      const parsed = { rows: entry.rows };
+      cache.set(meta.id, parsed);
+      return parsed;
+    }
+
+    function sparklineSvg(rows) {
+      const sampled = downsample(rows, 48);
+      const values = sampled.map((point) => point[1]);
+      const min = Math.min(...values);
+      const max = Math.max(...values);
+      const width = 220;
+      const height = 34;
+      const pad = 3;
+      const scaleY = (value) => {
+        if (max === min) return height / 2;
+        return height - pad - ((value - min) / (max - min)) * (height - pad * 2);
+      };
+
+      let points = "";
+      for (let i = 0; i < sampled.length; i += 1) {
+        const x = (i / (sampled.length - 1)) * width;
+        points += `${x.toFixed(2)},${scaleY(sampled[i][1]).toFixed(2)} `;
+      }
+
+      return `
+        <svg class="sparkline" viewBox="0 0 ${width} ${height}" preserveAspectRatio="none" aria-hidden="true">
+          <polyline points="${points.trim()}" fill="none" stroke="#0b3c5d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></polyline>
+        </svg>
+      `;
+    }
+
+    function renderSeriesGrid() {
+      const filtered = SERIES.filter((series) => {
+        const categoryOk = activeCategory === "All" || series.category === activeCategory;
+        const textOk = !searchTerm || series.label.toLowerCase().includes(searchTerm) || series.file.toLowerCase().includes(searchTerm);
+        return categoryOk && textOk;
+      });
+
+      if (!filtered.length) {
+        seriesGrid.innerHTML = "<div class='series-empty'>No variables match your filter.</div>";
+        return;
+      }
+
+      seriesGrid.innerHTML = filtered.map((series) => {
+        const activeClass = series.id === activeId ? " active" : "";
+        const entry = SERIES_DATA[series.id];
+        const preview = entry && Array.isArray(entry.rows) && entry.rows.length
+          ? sparklineSvg(entry.rows)
+          : "<div class='sparkline'></div>";
+        return `
+          <button class="series-card${activeClass}" data-id="${series.id}" type="button">
+            <div class="series-name">${escapeHtml(series.label)}</div>
+            <div class="series-file">${escapeHtml(series.file)}</div>
+            ${preview}
+          </button>
+        `;
+      }).join("");
+
+      const cards = Array.from(seriesGrid.querySelectorAll(".series-card"));
+      cards.forEach((card) => {
+        card.addEventListener("click", () => {
+          const id = card.getAttribute("data-id");
+          if (!id) return;
+          setActiveSeries(id);
+        });
+      });
+    }
+
+    function renderFallbackChart(rows) {
+      const sampled = downsample(rows, 360);
+      const values = sampled.map((point) => point[1]);
+      const min = Math.min(...values);
+      const max = Math.max(...values);
+      const width = 860;
+      const height = 350;
+      const padX = 26;
+      const padY = 18;
+
+      const scaleX = (i) => padX + (i / (sampled.length - 1)) * (width - padX * 2);
+      const scaleY = (value) => {
+        if (max === min) return height / 2;
+        return height - padY - ((value - min) / (max - min)) * (height - padY * 2);
+      };
+
+      let path = "";
+      for (let i = 0; i < sampled.length; i += 1) {
+        const x = scaleX(i);
+        const y = scaleY(sampled[i][1]);
+        path += `${i === 0 ? "M" : "L"}${x.toFixed(2)} ${y.toFixed(2)} `;
+      }
+
+      chartNode.innerHTML = `
+        <svg viewBox="0 0 ${width} ${height}" width="100%" height="100%" role="img" aria-label="Series chart">
+          <rect x="0" y="0" width="${width}" height="${height}" fill="#fcfdff"></rect>
+          <path d="${path.trim()}" fill="none" stroke="#0b3c5d" stroke-width="2"></path>
+        </svg>
+      `;
+    }
+
+    function setActiveSeries(id) {
+      const meta = SERIES.find((item) => item.id === id);
+      if (!meta) return;
+
+      activeId = id;
+      selectionNonce += 1;
+      const thisNonce = selectionNonce;
+      renderSeriesGrid();
+
+      focusName.textContent = meta.label;
+      focusMeta.textContent = `${meta.category} | ${meta.file}`;
+      chartNode.classList.add("chart-loading");
+      chartNode.textContent = "Loading chart...";
+
+      const seriesHref = `Data/${meta.file}`;
+      downloadSeriesBtn.href = seriesHref;
+      downloadSeriesBtn.setAttribute("download", meta.file);
+
+      try {
+        const loaded = loadSeries(meta);
+        const rows = loaded.rows;
+        const latest = rows[rows.length - 1];
+        statStart.textContent = formatDate(rows[0][0]);
+        statEnd.textContent = formatDate(latest[0]);
+        statLatest.textContent = formatValue(latest[1]);
+        statCount.textContent = rows.length.toLocaleString("en-US");
+
+        // Always render immediately to avoid any "stuck loading" state.
+        chartNode.classList.remove("chart-loading");
+        renderFallbackChart(rows);
+
+        const canUsePlotly = window.Plotly && typeof window.Plotly.newPlot === "function";
+        if (!canUsePlotly) return;
+
+        const plotRows = downsample(rows, 2200);
+        const x = plotRows.map((row) => row[0]);
+        const y = plotRows.map((row) => row[1]);
+
+        const trace = {
+          x,
+          y,
+          type: "scatter",
+          mode: "lines",
+          line: { color: "#0b3c5d", width: 2.1 },
+          hovertemplate: "%{x}<br>%{y:.6f}<extra></extra>"
+        };
+
+        const layout = {
+          margin: { l: 50, r: 16, t: 16, b: 42 },
+          paper_bgcolor: "#fcfdff",
+          plot_bgcolor: "#fcfdff",
+          xaxis: {
+            showgrid: true,
+            gridcolor: "#e4eaf1",
+            tickfont: { color: "#465a70", size: 11 },
+            rangeslider: { visible: true, bgcolor: "#eef3f8", bordercolor: "#d7e0ea", thickness: 0.1 }
+          },
+          yaxis: {
+            showgrid: true,
+            gridcolor: "#e4eaf1",
+            tickfont: { color: "#465a70", size: 11 }
+          },
+          font: { family: "Manrope, sans-serif", color: "#0f1c2a", size: 12 },
+          showlegend: false
+        };
+
+        const config = {
+          responsive: true,
+          displaylogo: false,
+          modeBarButtonsToRemove: ["lasso2d", "select2d", "toggleSpikelines", "autoScale2d"]
+        };
+
+        const attemptId = `${thisNonce}:${meta.id}:${Date.now()}`;
+        chartNode.dataset.plotAttempt = attemptId;
+        const timeoutMs = 2200;
+        const timeout = setTimeout(() => {
+          if (thisNonce !== selectionNonce) return;
+          if (chartNode.dataset.plotAttempt !== attemptId) return;
+          chartNode.dataset.plotAttempt = "";
+          renderFallbackChart(rows);
+        }, timeoutMs);
+
+        Promise.resolve()
+          .then(() => window.Plotly.purge(chartNode))
+          .catch(() => {})
+          .then(() => window.Plotly.newPlot(chartNode, [trace], layout, config))
+          .then(() => {
+            if (thisNonce !== selectionNonce) return;
+            if (chartNode.dataset.plotAttempt !== attemptId) return;
+            chartNode.dataset.plotAttempt = "";
+            clearTimeout(timeout);
+          })
+          .catch((plotError) => {
+            if (thisNonce !== selectionNonce) return;
+            if (chartNode.dataset.plotAttempt !== attemptId) return;
+            chartNode.dataset.plotAttempt = "";
+            clearTimeout(timeout);
+            console.error(plotError);
+            renderFallbackChart(rows);
+          });
+      } catch (error) {
+        console.error(error);
+        chartNode.classList.add("chart-loading");
+        chartNode.textContent = `Could not load ${meta.file}.`;
+        statStart.textContent = "-";
+        statEnd.textContent = "-";
+        statLatest.textContent = "-";
+        statCount.textContent = "-";
+      }
+    }
+
+    function setupFilters() {
+      chips.forEach((chip) => {
+        chip.addEventListener("click", () => {
+          activeCategory = chip.getAttribute("data-category") || "All";
+          chips.forEach((other) => other.classList.toggle("active", other === chip));
+          renderSeriesGrid();
+
+          const stillVisible = SERIES.some((series) => {
+            const categoryOk = activeCategory === "All" || series.category === activeCategory;
+            const textOk = !searchTerm || series.label.toLowerCase().includes(searchTerm) || series.file.toLowerCase().includes(searchTerm);
+            return categoryOk && textOk && series.id === activeId;
+          });
+
+          if (!stillVisible) {
+            const firstVisible = SERIES.find((series) => {
+              const categoryOk = activeCategory === "All" || series.category === activeCategory;
+              const textOk = !searchTerm || series.label.toLowerCase().includes(searchTerm) || series.file.toLowerCase().includes(searchTerm);
+              return categoryOk && textOk;
+            });
+            if (firstVisible) setActiveSeries(firstVisible.id);
+          }
+        });
+      });
+
+      searchInput.addEventListener("input", (event) => {
+        searchTerm = event.target.value.trim().toLowerCase();
+        renderSeriesGrid();
+
+        const activeStillVisible = SERIES.some((series) => {
+          const categoryOk = activeCategory === "All" || series.category === activeCategory;
+          const textOk = !searchTerm || series.label.toLowerCase().includes(searchTerm) || series.file.toLowerCase().includes(searchTerm);
+          return categoryOk && textOk && series.id === activeId;
+        });
+
+        if (!activeStillVisible) {
+          const fallbackSeries = SERIES.find((series) => {
+            const categoryOk = activeCategory === "All" || series.category === activeCategory;
+            const textOk = !searchTerm || series.label.toLowerCase().includes(searchTerm) || series.file.toLowerCase().includes(searchTerm);
+            return categoryOk && textOk;
+          });
+          if (fallbackSeries) setActiveSeries(fallbackSeries.id);
+        }
+      });
+    }
+
+    function initializePage() {
+      const today = new Date();
+      document.getElementById("yearText").textContent = String(today.getFullYear());
+      document.getElementById("updatedText").textContent =
+        `Updated ${today.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}`;
+
+      if (!SERIES.length) {
+        seriesGrid.innerHTML = "<div class='series-empty'>Data bundle missing. Ensure caba_data.js is present.</div>";
+        chartNode.classList.add("chart-loading");
+        chartNode.textContent = "Data bundle missing.";
+        return;
+      }
+
+      setupFilters();
+      renderSeriesGrid();
+      setActiveSeries(activeId);
+    }
+
+    window.addEventListener("load", initializePage);
+  </script>
+</body>
+</html>
