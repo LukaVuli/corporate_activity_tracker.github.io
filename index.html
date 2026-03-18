@@ -249,11 +249,7 @@
     }
 
     .explorer-controls {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 0.65rem;
       margin-bottom: 0.9rem;
-      align-items: center;
     }
 
     #searchInput {
@@ -268,6 +264,99 @@
     }
 
     #searchInput:focus {
+      outline: 2px solid rgba(11, 60, 93, 0.2);
+      border-color: rgba(11, 60, 93, 0.5);
+    }
+
+    .dropdown-wrapper {
+      position: relative;
+    }
+
+    .dropdown-list {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      max-height: 320px;
+      overflow-y: auto;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      margin-top: 4px;
+      z-index: 50;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    }
+
+    .dropdown-list.open {
+      display: block;
+    }
+
+    .dropdown-item {
+      display: grid;
+      grid-template-columns: auto 120px 1fr;
+      grid-template-rows: auto auto;
+      column-gap: 0.75rem;
+      align-items: center;
+      padding: 0.55rem 0.72rem;
+      cursor: pointer;
+      font-size: 0.88rem;
+      border-bottom: 1px solid rgba(214, 221, 230, 0.5);
+    }
+
+    .dropdown-item:last-child {
+      border-bottom: none;
+    }
+
+    .dropdown-item:hover,
+    .dropdown-item.active {
+      background: rgba(11, 60, 93, 0.06);
+    }
+
+    .dropdown-item-label {
+      font-weight: 600;
+      color: var(--ink);
+      grid-column: 1;
+      grid-row: 1;
+      white-space: nowrap;
+    }
+
+    .dropdown-item-meta {
+      font-size: 0.76rem;
+      color: var(--ink-soft);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      grid-column: 1;
+      grid-row: 2;
+      white-space: nowrap;
+    }
+
+    .dropdown-item-sparkline {
+      width: 120px;
+      height: 28px;
+      display: block;
+      grid-column: 2;
+      grid-row: 1 / 3;
+    }
+
+    .dropdown-empty {
+      padding: 0.7rem 0.72rem;
+      color: var(--ink-soft);
+      font-size: 0.88rem;
+    }
+
+    .date-input {
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 0.25rem 0.35rem;
+      font: inherit;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--ink);
+      background: #fff;
+      width: 100%;
+    }
+
+    .date-input:focus {
       outline: 2px solid rgba(11, 60, 93, 0.2);
       border-color: rgba(11, 60, 93, 0.5);
     }
@@ -298,7 +387,7 @@
 
     .explorer-layout {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr;
       gap: 0.85rem;
       align-items: start;
     }
@@ -379,8 +468,6 @@
       border-radius: 12px;
       background: #ffffff;
       padding: 0.85rem;
-      position: sticky;
-      top: 86px;
     }
 
     .focus-head {
@@ -400,7 +487,7 @@
 
     #mainChart {
       width: 100%;
-      min-height: 370px;
+      min-height: 440px;
       border: 1px solid var(--line);
       border-radius: 11px;
       overflow: hidden;
@@ -417,7 +504,7 @@
     .stats-grid {
       margin-top: 0.65rem;
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(5, minmax(0, 1fr));
       gap: 0.45rem;
     }
 
@@ -439,6 +526,13 @@
       font-size: 0.82rem;
       font-weight: 700;
       color: var(--ink);
+    }
+
+    .stat-date {
+      display: block;
+      font-size: 0.7rem;
+      color: var(--ink-soft);
+      margin-top: 0.05rem;
     }
 
     .focus-actions {
@@ -472,14 +566,6 @@
       .authors-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
-
-      .explorer-layout {
-        grid-template-columns: 1fr;
-      }
-
-      .focus-panel {
-        position: static;
-      }
     }
 
     @media (max-width: 720px) {
@@ -499,25 +585,12 @@
         grid-template-columns: 1fr;
       }
 
-      .explorer-controls {
-        grid-template-columns: 1fr;
-      }
-
-      .category-row {
-        justify-content: flex-start;
-      }
-
-      .series-grid {
-        grid-template-columns: 1fr;
-        max-height: 460px;
-      }
-
       .stats-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
       #mainChart {
-        min-height: 320px;
+        min-height: 340px;
       }
     }
   </style>
@@ -538,7 +611,7 @@
             Corporate Activity Tracker turns firm-level 10-Q filings into real-time, daily indicators of U.S. macroeconomic conditions. By benchmarking each announcement to the same fiscal quarter a year earlier and aggregating across the quarterly reporting cycle, it filters firm-specific noise and composition shifts. The result is a high-frequency view of the business cycle that separates leading signals (liquidity, leverage, corporate debt dynamics) from lagging fundamentals—and is validated in forecasting U.S. stock market returns.
           </p>
           <div class="hero-actions">
-            <a class="btn primary" href="Data_All.zip" download>Download Data</a>
+            <a class="btn primary" href="Data_All.zip" download>Download All Data</a>
             <a class="btn secondary" href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4922676" target="_blank" rel="noopener noreferrer">Working Paper</a>
           </div>
         </div>
@@ -549,23 +622,19 @@
       <div class="container">
         <h2 class="section-title">Variable Explorer</h2>
         <p class="section-subtitle">
-          Click a variable to inspect the time series, zoom in interactively, and download that specific series.
+          Select a variable from the dropdown to inspect the time series, adjust the date range, zoom in interactively, and download that specific series.
         </p>
 
         <div class="explorer-card">
           <div class="explorer-controls">
-            <input id="searchInput" type="search" placeholder="Search variable name...">
-            <div class="category-row" id="categoryRow">
-              <button type="button" class="chip active" data-category="All">All</button>
-              <button type="button" class="chip" data-category="Fundamentals">Fundamentals</button>
-              <button type="button" class="chip" data-category="Ratios">Ratios</button>
+            <div class="dropdown-wrapper" id="dropdownWrapper">
+              <input id="searchInput" type="text" placeholder="Search variables..." autocomplete="off">
+              <div class="dropdown-list" id="dropdownList"></div>
             </div>
           </div>
 
           <div class="explorer-layout">
-            <div class="series-grid" id="seriesGrid" aria-live="polite"></div>
-
-            <aside class="focus-panel">
+            <div class="focus-panel">
               <div class="focus-head">
                 <h3 id="focusName">Loading variable...</h3>
                 <p id="focusMeta">Select a series to inspect details.</p>
@@ -576,15 +645,21 @@
               <div class="stats-grid">
                 <div class="stat">
                   <span class="stat-label">Start</span>
-                  <span class="stat-value" id="statStart">-</span>
+                  <input type="date" class="date-input" id="statStart">
                 </div>
                 <div class="stat">
                   <span class="stat-label">End</span>
-                  <span class="stat-value" id="statEnd">-</span>
+                  <input type="date" class="date-input" id="statEnd">
                 </div>
                 <div class="stat">
-                  <span class="stat-label">Latest</span>
+                  <span class="stat-label">First Value</span>
+                  <span class="stat-value" id="statFirst">-</span>
+                  <span class="stat-date" id="statFirstDate"></span>
+                </div>
+                <div class="stat">
+                  <span class="stat-label">Latest Value</span>
                   <span class="stat-value" id="statLatest">-</span>
+                  <span class="stat-date" id="statLatestDate"></span>
                 </div>
                 <div class="stat">
                   <span class="stat-label">Observations</span>
@@ -595,7 +670,7 @@
               <div class="focus-actions">
                 <a id="downloadSeriesBtn" class="btn primary" href="#" download>Download This Series</a>
               </div>
-            </aside>
+            </div>
           </div>
         </div>
       </div>
@@ -673,22 +748,27 @@
     const SERIES_DATA = BUNDLE.seriesData && typeof BUNDLE.seriesData === "object" ? BUNDLE.seriesData : {};
 
     const cache = new Map();
-    const seriesGrid = document.getElementById("seriesGrid");
     const searchInput = document.getElementById("searchInput");
-    const chips = Array.from(document.querySelectorAll(".chip"));
+    const dropdownList = document.getElementById("dropdownList");
+    const dropdownWrapper = document.getElementById("dropdownWrapper");
     const focusName = document.getElementById("focusName");
     const focusMeta = document.getElementById("focusMeta");
     const chartNode = document.getElementById("mainChart");
     const statStart = document.getElementById("statStart");
     const statEnd = document.getElementById("statEnd");
+    const statFirst = document.getElementById("statFirst");
+    const statFirstDate = document.getElementById("statFirstDate");
     const statLatest = document.getElementById("statLatest");
+    const statLatestDate = document.getElementById("statLatestDate");
     const statCount = document.getElementById("statCount");
     const downloadSeriesBtn = document.getElementById("downloadSeriesBtn");
 
-    let activeCategory = "All";
     let searchTerm = "";
     let activeId = SERIES.length ? SERIES[0].id : "";
     let selectionNonce = 0;
+    let dropdownOpen = false;
+    let customStartDate = "";
+    let customEndDate = "";
 
     function escapeHtml(value) {
       const text = String(value ?? "");
@@ -733,13 +813,13 @@
       return parsed;
     }
 
-    function sparklineSvg(rows) {
+    function sparklineSvg(rows, svgClass) {
       const sampled = downsample(rows, 48);
       const values = sampled.map((point) => point[1]);
       const min = Math.min(...values);
       const max = Math.max(...values);
       const width = 220;
-      const height = 34;
+      const height = 28;
       const pad = 3;
       const scaleY = (value) => {
         if (max === min) return height / 2;
@@ -753,46 +833,74 @@
       }
 
       return `
-        <svg class="sparkline" viewBox="0 0 ${width} ${height}" preserveAspectRatio="none" aria-hidden="true">
-          <polyline points="${points.trim()}" fill="none" stroke="#0b3c5d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></polyline>
+        <svg class="${svgClass}" viewBox="0 0 ${width} ${height}" preserveAspectRatio="none" aria-hidden="true">
+          <polyline points="${points.trim()}" fill="none" stroke="#0b3c5d" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></polyline>
         </svg>
       `;
     }
 
-    function renderSeriesGrid() {
-      const filtered = SERIES.filter((series) => {
-        const categoryOk = activeCategory === "All" || series.category === activeCategory;
-        const textOk = !searchTerm || series.label.toLowerCase().includes(searchTerm) || series.file.toLowerCase().includes(searchTerm);
-        return categoryOk && textOk;
+    function getFilteredSeries() {
+      return SERIES.filter((series) => {
+        return !searchTerm || series.label.toLowerCase().includes(searchTerm) || series.file.toLowerCase().includes(searchTerm);
       });
+    }
+
+    function renderDropdown() {
+      const filtered = getFilteredSeries();
 
       if (!filtered.length) {
-        seriesGrid.innerHTML = "<div class='series-empty'>No variables match your filter.</div>";
+        dropdownList.innerHTML = "<div class='dropdown-empty'>No variables match your filter.</div>";
         return;
       }
 
-      seriesGrid.innerHTML = filtered.map((series) => {
+      dropdownList.innerHTML = filtered.map((series) => {
         const activeClass = series.id === activeId ? " active" : "";
         const entry = SERIES_DATA[series.id];
         const preview = entry && Array.isArray(entry.rows) && entry.rows.length
-          ? sparklineSvg(entry.rows)
-          : "<div class='sparkline'></div>";
+          ? sparklineSvg(entry.rows, "dropdown-item-sparkline")
+          : "";
         return `
-          <button class="series-card${activeClass}" data-id="${series.id}" type="button">
-            <div class="series-name">${escapeHtml(series.label)}</div>
-            <div class="series-file">${escapeHtml(series.file)}</div>
+          <div class="dropdown-item${activeClass}" data-id="${series.id}">
+            <div class="dropdown-item-label">${escapeHtml(series.label)}</div>
+            <div class="dropdown-item-meta">${escapeHtml(series.category)} · ${escapeHtml(series.file)}</div>
             ${preview}
-          </button>
+          </div>
         `;
       }).join("");
 
-      const cards = Array.from(seriesGrid.querySelectorAll(".series-card"));
-      cards.forEach((card) => {
-        card.addEventListener("click", () => {
-          const id = card.getAttribute("data-id");
+      const items = Array.from(dropdownList.querySelectorAll(".dropdown-item"));
+      items.forEach((item) => {
+        item.addEventListener("mousedown", (e) => {
+          e.preventDefault();
+          const id = item.getAttribute("data-id");
           if (!id) return;
+          closeDropdown();
           setActiveSeries(id);
         });
+      });
+    }
+
+    function openDropdown() {
+      if (dropdownOpen) return;
+      dropdownOpen = true;
+      dropdownList.classList.add("open");
+      renderDropdown();
+    }
+
+    function closeDropdown() {
+      dropdownOpen = false;
+      dropdownList.classList.remove("open");
+      searchInput.value = "";
+    }
+
+    function filterRowsByDate(rows) {
+      const start = customStartDate || "";
+      const end = customEndDate || "";
+      if (!start && !end) return rows;
+      return rows.filter((row) => {
+        if (start && row[0] < start) return false;
+        if (end && row[0] > end) return false;
+        return true;
       });
     }
 
@@ -827,14 +935,13 @@
       `;
     }
 
-    function setActiveSeries(id) {
+    function setActiveSeries(id, keepDates) {
       const meta = SERIES.find((item) => item.id === id);
       if (!meta) return;
 
       activeId = id;
       selectionNonce += 1;
       const thisNonce = selectionNonce;
-      renderSeriesGrid();
 
       focusName.textContent = meta.label;
       focusMeta.textContent = `${meta.category} | ${meta.file}`;
@@ -847,14 +954,35 @@
 
       try {
         const loaded = loadSeries(meta);
-        const rows = loaded.rows;
+        const allRows = loaded.rows;
+
+        if (!keepDates) {
+          customStartDate = "";
+          customEndDate = "";
+          statStart.value = allRows[0][0];
+          statEnd.value = allRows[allRows.length - 1][0];
+        }
+
+        const rows = filterRowsByDate(allRows);
+        if (!rows.length) {
+          chartNode.classList.add("chart-loading");
+          chartNode.textContent = "No data in selected date range.";
+          statFirst.textContent = "-";
+          statFirstDate.textContent = "";
+          statLatest.textContent = "-";
+          statLatestDate.textContent = "";
+          statCount.textContent = "0";
+          return;
+        }
+
+        const first = rows[0];
         const latest = rows[rows.length - 1];
-        statStart.textContent = formatDate(rows[0][0]);
-        statEnd.textContent = formatDate(latest[0]);
+        statFirst.textContent = formatValue(first[1]);
+        statFirstDate.textContent = formatDate(first[0]);
         statLatest.textContent = formatValue(latest[1]);
+        statLatestDate.textContent = formatDate(latest[0]);
         statCount.textContent = rows.length.toLocaleString("en-US");
 
-        // Always render immediately to avoid any "stuck loading" state.
         chartNode.classList.remove("chart-loading");
         renderFallbackChart(rows);
 
@@ -931,55 +1059,57 @@
         console.error(error);
         chartNode.classList.add("chart-loading");
         chartNode.textContent = `Could not load ${meta.file}.`;
-        statStart.textContent = "-";
-        statEnd.textContent = "-";
+        statStart.value = "";
+        statEnd.value = "";
+        statFirst.textContent = "-";
+        statFirstDate.textContent = "";
         statLatest.textContent = "-";
+        statLatestDate.textContent = "";
         statCount.textContent = "-";
       }
     }
 
     function setupFilters() {
-      chips.forEach((chip) => {
-        chip.addEventListener("click", () => {
-          activeCategory = chip.getAttribute("data-category") || "All";
-          chips.forEach((other) => other.classList.toggle("active", other === chip));
-          renderSeriesGrid();
-
-          const stillVisible = SERIES.some((series) => {
-            const categoryOk = activeCategory === "All" || series.category === activeCategory;
-            const textOk = !searchTerm || series.label.toLowerCase().includes(searchTerm) || series.file.toLowerCase().includes(searchTerm);
-            return categoryOk && textOk && series.id === activeId;
-          });
-
-          if (!stillVisible) {
-            const firstVisible = SERIES.find((series) => {
-              const categoryOk = activeCategory === "All" || series.category === activeCategory;
-              const textOk = !searchTerm || series.label.toLowerCase().includes(searchTerm) || series.file.toLowerCase().includes(searchTerm);
-              return categoryOk && textOk;
-            });
-            if (firstVisible) setActiveSeries(firstVisible.id);
-          }
-        });
+      searchInput.addEventListener("focus", () => {
+        searchInput.select();
+        searchTerm = "";
+        openDropdown();
       });
 
-      searchInput.addEventListener("input", (event) => {
-        searchTerm = event.target.value.trim().toLowerCase();
-        renderSeriesGrid();
+      searchInput.addEventListener("input", () => {
+        searchTerm = searchInput.value.trim().toLowerCase();
+        openDropdown();
+        renderDropdown();
+      });
 
-        const activeStillVisible = SERIES.some((series) => {
-          const categoryOk = activeCategory === "All" || series.category === activeCategory;
-          const textOk = !searchTerm || series.label.toLowerCase().includes(searchTerm) || series.file.toLowerCase().includes(searchTerm);
-          return categoryOk && textOk && series.id === activeId;
-        });
+      searchInput.addEventListener("blur", () => {
+        closeDropdown();
+        searchTerm = "";
+      });
 
-        if (!activeStillVisible) {
-          const fallbackSeries = SERIES.find((series) => {
-            const categoryOk = activeCategory === "All" || series.category === activeCategory;
-            const textOk = !searchTerm || series.label.toLowerCase().includes(searchTerm) || series.file.toLowerCase().includes(searchTerm);
-            return categoryOk && textOk;
-          });
-          if (fallbackSeries) setActiveSeries(fallbackSeries.id);
+      searchInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          const filtered = getFilteredSeries();
+          if (filtered.length) {
+            closeDropdown();
+            setActiveSeries(filtered[0].id);
+            searchInput.blur();
+          }
+        } else if (e.key === "Escape") {
+          closeDropdown();
+          searchInput.blur();
         }
+      });
+
+      statStart.addEventListener("change", () => {
+        customStartDate = statStart.value;
+        setActiveSeries(activeId, true);
+      });
+
+      statEnd.addEventListener("change", () => {
+        customEndDate = statEnd.value;
+        setActiveSeries(activeId, true);
       });
     }
 
@@ -990,14 +1120,12 @@
         `Updated ${today.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}`;
 
       if (!SERIES.length) {
-        seriesGrid.innerHTML = "<div class='series-empty'>Data bundle missing. Ensure caba_data.js is present.</div>";
         chartNode.classList.add("chart-loading");
         chartNode.textContent = "Data bundle missing.";
         return;
       }
 
       setupFilters();
-      renderSeriesGrid();
       setActiveSeries(activeId);
     }
 
