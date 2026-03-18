@@ -764,7 +764,9 @@
     const downloadSeriesBtn = document.getElementById("downloadSeriesBtn");
 
     let searchTerm = "";
-    let activeId = SERIES.length ? SERIES[0].id : "";
+    let activeId = SERIES.length
+      ? (SERIES.find(s => s.id === "netincome") || SERIES[0]).id
+      : "";
     let selectionNonce = 0;
     let dropdownOpen = false;
     let customStartDate = "";
@@ -1015,7 +1017,8 @@
           yaxis: {
             showgrid: true,
             gridcolor: "#e4eaf1",
-            tickfont: { color: "#465a70", size: 11 }
+            tickfont: { color: "#465a70", size: 11 },
+            autorange: true
           },
           font: { family: "Manrope, sans-serif", color: "#0f1c2a", size: 12 },
           showlegend: false
@@ -1046,6 +1049,22 @@
             if (chartNode.dataset.plotAttempt !== attemptId) return;
             chartNode.dataset.plotAttempt = "";
             clearTimeout(timeout);
+
+            /* Auto-rescale y-axis when x-range changes (rangeslider drag / zoom) */
+            chartNode.on("plotly_relayout", function (evt) {
+              let x0 = evt["xaxis.range[0]"] || (evt["xaxis.range"] && evt["xaxis.range"][0]);
+              let x1 = evt["xaxis.range[1]"] || (evt["xaxis.range"] && evt["xaxis.range"][1]);
+              if (x0 == null || x1 == null) return;
+              const visibleY = y.filter((_, i) => x[i] >= x0 && x[i] <= x1);
+              if (!visibleY.length) return;
+              const yMin = Math.min(...visibleY);
+              const yMax = Math.max(...visibleY);
+              const pad = (yMax - yMin) * 0.05 || 0.001;
+              window.Plotly.relayout(chartNode, {
+                "yaxis.range": [yMin - pad, yMax + pad],
+                "yaxis.autorange": false
+              });
+            });
           })
           .catch((plotError) => {
             if (thisNonce !== selectionNonce) return;
