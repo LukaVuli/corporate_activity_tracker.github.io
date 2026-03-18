@@ -593,7 +593,57 @@
         min-height: 340px;
       }
     }
+
+    .bibtex-link {
+      color: var(--brand);
+      font-weight: 700;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    .bibtex-popup {
+      background: #f0f4f8;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 0.8rem;
+      margin-top: 0.2rem;
+    }
+
+    .bibtex-popup pre {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.82rem;
+      white-space: pre-wrap;
+      word-break: break-word;
+      color: var(--ink);
+      margin-bottom: 0.5rem;
+    }
+
+    .bibtex-copy-btn {
+      font-size: 0.8rem;
+      padding: 0.4rem 0.7rem;
+    }
   </style>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      var toggle = document.getElementById("bibtexToggle");
+      var popup = document.getElementById("bibtexPopup");
+      var copyBtn = document.getElementById("bibtexCopyBtn");
+      if (toggle && popup) {
+        toggle.addEventListener("click", function() {
+          popup.style.display = popup.style.display === "none" ? "block" : "none";
+        });
+      }
+      if (copyBtn) {
+        copyBtn.addEventListener("click", function() {
+          var text = document.getElementById("bibtexCode").textContent;
+          navigator.clipboard.writeText(text).then(function() {
+            copyBtn.textContent = "Copied!";
+            setTimeout(function() { copyBtn.textContent = "Copy to Clipboard"; }, 2000);
+          });
+        });
+      }
+    });
+  </script>
 </head>
 <body>
   <header class="site-header">
@@ -610,6 +660,18 @@
           <p>
             Corporate Activity Tracker turns firm-level 10-Q filings into real-time, daily indicators of U.S. macroeconomic conditions. By benchmarking each announcement to the same fiscal quarter a year earlier and aggregating across the quarterly reporting cycle, it filters firm-specific noise and composition shifts. The result is a high-frequency view of the business cycle that separates leading signals (liquidity, leverage, corporate debt dynamics) from lagging fundamentals—and is validated in forecasting U.S. stock market returns.
           </p>
+          <p>
+            This website provides access to the data of the series and their interactive plots. Please cite our paper if you are using this data. You can access the <a href="javascript:void(0)" id="bibtexToggle" class="bibtex-link">BibTeX</a> here. For inquiries, please contact us at <a href="mailto:contact@corporateactivitytracker.com">contact@corporateactivitytracker.com</a>.
+          </p>
+          <div id="bibtexPopup" class="bibtex-popup" style="display:none;">
+            <pre id="bibtexCode">@article{pettenuzzo2024financial,
+  title={Financial statements and macroeconomic dynamics},
+  author={Pettenuzzo, Davide and Sabbatucci, Riccardo and Timmermann, Allan and Vulicevic, Luka},
+  journal={Available at SSRN 4922676},
+  year={2024}
+}</pre>
+            <button class="btn secondary bibtex-copy-btn" id="bibtexCopyBtn">Copy to Clipboard</button>
+          </div>
           <div class="hero-actions">
             <a class="btn primary" href="Data_All.zip" download>Download All Data</a>
             <a class="btn secondary" href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4922676" target="_blank" rel="noopener noreferrer">Working Paper</a>
