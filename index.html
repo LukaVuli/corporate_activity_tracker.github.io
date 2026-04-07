@@ -809,6 +809,15 @@
     const SERIES = Array.isArray(BUNDLE.meta) ? BUNDLE.meta : [];
     const SERIES_DATA = BUNDLE.seriesData && typeof BUNDLE.seriesData === "object" ? BUNDLE.seriesData : {};
 
+    const FIVE_FACTORS_ID = "__five_factors__";
+    const FIVE_FACTORS = [
+      { id: "leverage_factor",            label: "Leverage Factor",            color: "#dc2626" },
+      { id: "marketvalues_factor",        label: "Market Values Factor",       color: "#2563eb" },
+      { id: "liquidity_factor",           label: "Liquidity Factor",           color: "#9333ea" },
+      { id: "operatingactivities_factor", label: "Operating Activity Factor",  color: "#ea580c" },
+      { id: "profitability_factor",       label: "Profitability Factor",       color: "#16a34a" },
+    ];
+
     const cache = new Map();
     const searchInput = document.getElementById("searchInput");
     const dropdownList = document.getElementById("dropdownList");
@@ -826,9 +835,7 @@
     const downloadSeriesBtn = document.getElementById("downloadSeriesBtn");
 
     let searchTerm = "";
-    let activeId = SERIES.length
-      ? (SERIES.find(s => s.id === "netincome") || SERIES[0]).id
-      : "";
+    let activeId = FIVE_FACTORS_ID;
     let selectionNonce = 0;
     let dropdownOpen = false;
     let customStartDate = "";
@@ -912,12 +919,21 @@
     function renderDropdown() {
       const filtered = getFilteredSeries();
 
-      if (!filtered.length) {
+      if (!filtered.length && searchTerm) {
         dropdownList.innerHTML = "<div class='dropdown-empty'>No variables match your filter.</div>";
         return;
       }
 
-      dropdownList.innerHTML = filtered.map((series) => {
+      var fiveActive = activeId === FIVE_FACTORS_ID ? " active" : "";
+      var fiveMatchesSearch = !searchTerm || "corporate activity 5 factors".includes(searchTerm);
+      var fiveHtml = fiveMatchesSearch
+        ? '<div class="dropdown-item' + fiveActive + '" data-id="' + FIVE_FACTORS_ID + '">'
+          + '<div class="dropdown-item-label" style="color:#0b3c5d;font-weight:700;">Corporate Activity 5 Factors</div>'
+          + '<div class="dropdown-item-meta">Factors · All five PCA factors</div>'
+          + '</div>'
+        : '';
+
+      dropdownList.innerHTML = fiveHtml + filtered.map((series) => {
         const activeClass = series.id === activeId ? " active" : "";
         const entry = SERIES_DATA[series.id];
         const preview = entry && Array.isArray(entry.rows) && entry.rows.length
@@ -939,7 +955,7 @@
           const id = item.getAttribute("data-id");
           if (!id) return;
           closeDropdown();
-          setActiveSeries(id);
+          if (id === FIVE_FACTORS_ID) { setFiveFactors(); } else { setActiveSeries(id); }
         });
       });
     }
@@ -999,7 +1015,136 @@
       `;
     }
 
+    function setFiveFactors(keepDates) {
+      activeId = FIVE_FACTORS_ID;
+      selectionNonce += 1;
+      const thisNonce = selectionNonce;
+
+      focusName.textContent = "Corporate Activity 5 Factors";
+      focusMeta.textContent = "Accounting Variable Factors";
+      chartNode.classList.add("chart-loading");
+      chartNode.textContent = "Loading chart...";
+
+      downloadSeriesBtn.href = "Data_All.zip";
+      downloadSeriesBtn.setAttribute("download", "Data_All.zip");
+      downloadSeriesBtn.textContent = "Download All Data";
+
+      try {
+        var allTraces = [];
+        var globalMinDate = null, globalMaxDate = null;
+        var totalObs = 0;
+
+        for (var fi = 0; fi < FIVE_FACTORS.length; fi++) {
+          var f = FIVE_FACTORS[fi];
+          var meta = SERIES.find(function(s) { return s.id === f.id; });
+          if (!meta) continue;
+          var loaded = loadSeries(meta);
+          var rows = filterRowsByDate(loaded.rows);
+          if (!rows.length) continue;
+
+          if (!globalMinDate || rows[0][0] < globalMinDate) globalMinDate = rows[0][0];
+          if (!globalMaxDate || rows[rows.length - 1][0] > globalMaxDate) globalMaxDate = rows[rows.length - 1][0];
+          totalObs = Math.max(totalObs, rows.length);
+
+          var plotRows = downsample(rows, 2200);
+          allTraces.push({
+            x: plotRows.map(function(r) { return r[0]; }),
+            y: plotRows.map(function(r) { return r[1]; }),
+            type: "scatter",
+            mode: "lines",
+            name: f.label,
+            line: { color: f.color, width: 2 },
+            hovertemplate: f.label + "<br>%{x}<br>%{y:.4f}<extra></extra>"
+          });
+        }
+
+        if (!allTraces.length) {
+          chartNode.textContent = "Factor data not available.";
+          return;
+        }
+
+        if (!keepDates) {
+          customStartDate = "";
+          customEndDate = "";
+          statStart.value = globalMinDate;
+          statEnd.value = globalMaxDate;
+        }
+
+        statFirst.textContent = "-";
+        statFirstDate.textContent = formatDate(globalMinDate);
+        statLatest.textContent = "-";
+        statLatestDate.textContent = formatDate(globalMaxDate);
+        statCount.textContent = totalObs.toLocaleString("en-US");
+
+        chartNode.classList.remove("chart-loading");
+        chartNode.innerHTML = "";
+
+        var canUsePlotly = window.Plotly && typeof window.Plotly.newPlot === "function";
+        if (!canUsePlotly) {
+          chartNode.textContent = "Plotly not loaded.";
+          return;
+        }
+
+        var layout = {
+          margin: { l: 50, r: 16, t: 16, b: 42 },
+          paper_bgcolor: "#fcfdff",
+          plot_bgcolor: "#fcfdff",
+          xaxis: {
+            showgrid: true,
+            gridcolor: "#e4eaf1",
+            tickfont: { color: "#465a70", size: 11 },
+            rangeslider: { visible: true, bgcolor: "#eef3f8", bordercolor: "#d7e0ea", thickness: 0.1 }
+          },
+          yaxis: {
+            showgrid: true,
+            gridcolor: "#e4eaf1",
+            tickfont: { color: "#465a70", size: 11 },
+            autorange: true
+          },
+          font: { family: "Manrope, sans-serif", color: "#0f1c2a", size: 12 },
+          showlegend: true,
+          legend: { orientation: "h", y: 1.06, x: 0.5, xanchor: "center", font: { size: 14 } }
+        };
+
+        var config = {
+          responsive: true,
+          displaylogo: false,
+          modeBarButtonsToRemove: ["lasso2d", "select2d", "toggleSpikelines", "autoScale2d"]
+        };
+
+        Promise.resolve()
+          .then(function() { return window.Plotly.purge(chartNode); })
+          .catch(function() {})
+          .then(function() { return window.Plotly.newPlot(chartNode, allTraces, layout, config); })
+          .then(function() {
+            if (thisNonce !== selectionNonce) return;
+            chartNode.on("plotly_relayout", function(evt) {
+              var x0 = evt["xaxis.range[0]"] || (evt["xaxis.range"] && evt["xaxis.range"][0]);
+              var x1 = evt["xaxis.range[1]"] || (evt["xaxis.range"] && evt["xaxis.range"][1]);
+              if (x0 == null || x1 == null) return;
+              var allY = [];
+              allTraces.forEach(function(tr) {
+                tr.x.forEach(function(xi, i) { if (xi >= x0 && xi <= x1) allY.push(tr.y[i]); });
+              });
+              if (!allY.length) return;
+              var yMin = Math.min.apply(null, allY);
+              var yMax = Math.max.apply(null, allY);
+              var pad = (yMax - yMin) * 0.05 || 0.001;
+              window.Plotly.relayout(chartNode, { "yaxis.range": [yMin - pad, yMax + pad], "yaxis.autorange": false });
+            });
+          })
+          .catch(function(err) { console.error(err); });
+
+      } catch (error) {
+        console.error(error);
+        chartNode.classList.add("chart-loading");
+        chartNode.textContent = "Could not load factor data.";
+      }
+    }
+
     function setActiveSeries(id, keepDates) {
+      if (id === FIVE_FACTORS_ID) { setFiveFactors(keepDates); return; }
+
       const meta = SERIES.find((item) => item.id === id);
       if (!meta) return;
 
@@ -1015,6 +1160,7 @@
       const seriesHref = `Data/${meta.file}`;
       downloadSeriesBtn.href = seriesHref;
       downloadSeriesBtn.setAttribute("download", meta.file);
+      downloadSeriesBtn.textContent = "Download This Series";
 
       try {
         const loaded = loadSeries(meta);
@@ -1185,12 +1331,12 @@
 
       statStart.addEventListener("change", () => {
         customStartDate = statStart.value;
-        setActiveSeries(activeId, true);
+        if (activeId === FIVE_FACTORS_ID) { setFiveFactors(true); } else { setActiveSeries(activeId, true); }
       });
 
       statEnd.addEventListener("change", () => {
         customEndDate = statEnd.value;
-        setActiveSeries(activeId, true);
+        if (activeId === FIVE_FACTORS_ID) { setFiveFactors(true); } else { setActiveSeries(activeId, true); }
       });
     }
 
@@ -1207,7 +1353,7 @@
       }
 
       setupFilters();
-      setActiveSeries(activeId);
+      setFiveFactors();
     }
 
     window.addEventListener("load", initializePage);
