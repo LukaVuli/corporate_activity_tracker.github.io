@@ -804,10 +804,28 @@
   </footer>
 
   <script src="caba_data.js"></script>
+  <script src="recession_data.js"></script>
   <script>
     const BUNDLE = window.CABA_DATA || { meta: [], seriesData: {} };
     const SERIES = Array.isArray(BUNDLE.meta) ? BUNDLE.meta : [];
     const SERIES_DATA = BUNDLE.seriesData && typeof BUNDLE.seriesData === "object" ? BUNDLE.seriesData : {};
+
+    /* NBER recession periods — loaded from recession_data.js */
+    var NBER_RECESSIONS = window.NBER_RECESSIONS || [];
+
+    function nberShapes(minDate, maxDate) {
+      return NBER_RECESSIONS
+        .filter(function(r) { return r[1] >= minDate && r[0] <= maxDate; })
+        .map(function(r) {
+          return {
+            type: "rect", xref: "x", yref: "paper",
+            x0: r[0] < minDate ? minDate : r[0],
+            x1: r[1] > maxDate ? maxDate : r[1],
+            y0: 0, y1: 1,
+            fillcolor: "rgba(0,0,0,0.07)", line: { width: 0 }, layer: "below"
+          };
+        });
+    }
 
     const FIVE_FACTORS_ID = "__five_factors__";
     const FIVE_FACTORS = [
@@ -1103,7 +1121,8 @@
           },
           font: { family: "Manrope, sans-serif", color: "#0f1c2a", size: 12 },
           showlegend: true,
-          legend: { orientation: "h", y: 1.06, x: 0.5, xanchor: "center", font: { size: 14 } }
+          legend: { orientation: "h", y: 1.06, x: 0.5, xanchor: "center", font: { size: 14 } },
+          shapes: nberShapes(globalMinDate, globalMaxDate)
         };
 
         var config = {
@@ -1229,7 +1248,8 @@
             autorange: true
           },
           font: { family: "Manrope, sans-serif", color: "#0f1c2a", size: 12 },
-          showlegend: false
+          showlegend: false,
+          shapes: nberShapes(rows[0][0], rows[rows.length - 1][0])
         };
 
         const config = {
