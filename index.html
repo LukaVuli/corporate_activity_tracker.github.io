@@ -249,18 +249,34 @@
     }
 
     .explorer-controls {
-      margin-bottom: 0.9rem;
+      display: grid;
+      gap: 0.65rem;
+      margin-bottom: 0.95rem;
+    }
+
+    .variable-picker {
+      display: grid;
+      gap: 0.65rem;
+      position: relative;
+    }
+
+    .variable-search-bar {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 0.45rem;
+      align-items: center;
     }
 
     #searchInput {
       width: 100%;
       border: 1px solid var(--line);
       background: #fdfefe;
-      border-radius: 10px;
-      padding: 0.62rem 0.72rem;
+      border-radius: 8px;
+      padding: 0.68rem 0.78rem;
       font: inherit;
       font-size: 0.9rem;
       color: var(--ink);
+      min-height: 44px;
     }
 
     #searchInput:focus {
@@ -268,80 +284,48 @@
       border-color: rgba(11, 60, 93, 0.5);
     }
 
-    .dropdown-wrapper {
-      position: relative;
+    .clear-search {
+      border: 1px solid var(--line);
+      background: #ffffff;
+      color: var(--ink-soft);
+      border-radius: 8px;
+      min-height: 44px;
+      padding: 0 0.85rem;
+      font: inherit;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.16s ease;
+      display: none;
     }
 
-    .dropdown-list {
+    .clear-search.visible {
+      display: block;
+    }
+
+    .clear-search:hover {
+      border-color: rgba(11, 60, 93, 0.45);
+      color: var(--brand);
+      background: #f7fbff;
+    }
+
+    .variable-dropdown {
       display: none;
       position: absolute;
-      top: 100%;
+      top: calc(100% + 0.35rem);
       left: 0;
       right: 0;
-      max-height: 320px;
-      overflow-y: auto;
-      background: #fff;
-      border: 1px solid var(--line);
+      z-index: 55;
+      background: #ffffff;
+      border: 1px solid rgba(148, 163, 184, 0.46);
       border-radius: 10px;
-      margin-top: 4px;
-      z-index: 50;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 18px 38px rgba(8, 22, 38, 0.14);
+      padding: 0.7rem;
     }
 
-    .dropdown-list.open {
-      display: block;
-    }
-
-    .dropdown-item {
+    .variable-dropdown.open {
       display: grid;
-      grid-template-columns: auto 120px 1fr;
-      grid-template-rows: auto auto;
-      column-gap: 0.75rem;
-      align-items: center;
-      padding: 0.55rem 0.72rem;
-      cursor: pointer;
-      font-size: 0.88rem;
-      border-bottom: 1px solid rgba(214, 221, 230, 0.5);
-    }
-
-    .dropdown-item:last-child {
-      border-bottom: none;
-    }
-
-    .dropdown-item:hover,
-    .dropdown-item.active {
-      background: rgba(11, 60, 93, 0.06);
-    }
-
-    .dropdown-item-label {
-      font-weight: 600;
-      color: var(--ink);
-      grid-column: 1;
-      grid-row: 1;
-      white-space: nowrap;
-    }
-
-    .dropdown-item-meta {
-      font-size: 0.76rem;
-      color: var(--ink-soft);
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-      grid-column: 1;
-      grid-row: 2;
-      white-space: nowrap;
-    }
-
-    .dropdown-item-sparkline {
-      width: 120px;
-      height: 28px;
-      display: block;
-      grid-column: 2;
-      grid-row: 1 / 3;
-    }
-
-    .dropdown-empty {
-      padding: 0.7rem 0.72rem;
-      color: var(--ink-soft);
-      font-size: 0.88rem;
+      gap: 0.6rem;
     }
 
     .date-input {
@@ -365,18 +349,24 @@
       display: flex;
       flex-wrap: wrap;
       gap: 0.45rem;
-      justify-content: flex-end;
+      justify-content: flex-start;
     }
 
     .chip {
       border: 1px solid var(--line);
       background: #ffffff;
       color: var(--ink-soft);
-      border-radius: 999px;
+      border-radius: 8px;
       padding: 0.44rem 0.64rem;
       font-size: 0.78rem;
       font-weight: 700;
       cursor: pointer;
+      transition: 0.16s ease;
+    }
+
+    .chip:hover {
+      border-color: rgba(11, 60, 93, 0.45);
+      color: var(--brand);
     }
 
     .chip.active {
@@ -394,9 +384,9 @@
 
     .series-grid {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 0.55rem;
-      max-height: 660px;
+      grid-template-columns: repeat(auto-fit, minmax(245px, 1fr));
+      gap: 0.5rem;
+      max-height: 278px;
       overflow: auto;
       padding-right: 0.2rem;
     }
@@ -412,14 +402,18 @@
 
     .series-card {
       border: 1px solid var(--line);
-      border-radius: 11px;
+      border-radius: 8px;
       background: #ffffff;
       text-align: left;
-      padding: 0.58rem;
+      padding: 0.58rem 0.62rem;
       display: grid;
-      gap: 0.32rem;
+      grid-template-columns: minmax(0, 1fr) 108px;
+      gap: 0.55rem;
+      align-items: center;
       cursor: pointer;
       transition: 0.15s ease;
+      font: inherit;
+      min-height: 68px;
     }
 
     .series-card:hover {
@@ -432,18 +426,37 @@
       background: #f9fcff;
     }
 
+    .series-copy {
+      display: grid;
+      gap: 0.18rem;
+      min-width: 0;
+    }
+
     .series-name {
       font-size: 0.84rem;
       line-height: 1.28;
       font-weight: 700;
       color: var(--ink);
+      overflow-wrap: anywhere;
     }
 
-    .series-file {
-      font-size: 0.74rem;
-      color: var(--ink-soft);
-      letter-spacing: 0.01em;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    .series-aside {
+      display: grid;
+      gap: 0.24rem;
+      justify-items: end;
+      min-width: 0;
+    }
+
+    .series-category {
+      border: 1px solid rgba(11, 60, 93, 0.2);
+      border-radius: 8px;
+      color: var(--brand);
+      background: rgba(11, 60, 93, 0.06);
+      font-size: 0.66rem;
+      font-weight: 800;
+      line-height: 1;
+      padding: 0.22rem 0.34rem;
+      text-transform: uppercase;
     }
 
     .sparkline {
@@ -485,7 +498,7 @@
       font-size: 0.83rem;
     }
 
-    #mainChart {
+    .main-chart {
       width: 100%;
       min-height: 634px;
       border: 1px solid var(--line);
@@ -589,9 +602,14 @@
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
-      #mainChart {
+      .main-chart {
         min-height: 490px;
       }
+    }
+
+    .section-subtitle strong {
+      color: var(--brand);
+      font-weight: 700;
     }
 
     .bibtex-link {
@@ -660,6 +678,9 @@
           <p>
             Corporate Activity Tracker turns firm-level 10-Q filings into real-time, daily indicators of U.S. macroeconomic conditions. By benchmarking each announcement to the same fiscal quarter a year earlier and aggregating across the quarterly reporting cycle, it filters firm-specific noise and composition shifts. The result is a high-frequency view of the business cycle that separates leading signals (liquidity, leverage, corporate debt dynamics) from lagging fundamentals—and is validated in forecasting U.S. stock market returns.
           </p>
+          <p id="recessionSummary">
+            Loading current recession estimates…
+          </p>
           <p>
             This website provides access to the data of the series and their interactive plots. Please cite our paper if you are using this data. You can access the <a href="javascript:void(0)" id="bibtexToggle" class="bibtex-link">BibTeX</a> here. For inquiries, please contact us at <a href="mailto:contact@corporateactivitytracker.com">contact@corporateactivitytracker.com</a>.
           </p>
@@ -684,14 +705,20 @@
       <div class="container">
         <h2 class="section-title">Variable Explorer</h2>
         <p class="section-subtitle">
-          Select a variable from the dropdown to inspect the time series, adjust the date range, zoom in interactively, and download that specific series.
+          Search or browse variables to inspect the time series, adjust the date range, zoom in interactively, and download that specific series.
         </p>
 
         <div class="explorer-card">
           <div class="explorer-controls">
-            <div class="dropdown-wrapper" id="dropdownWrapper">
-              <input id="searchInput" type="text" placeholder="Search variables..." autocomplete="off">
-              <div class="dropdown-list" id="dropdownList"></div>
+            <div class="variable-picker" id="variablePicker">
+              <div class="variable-search-bar">
+                <input id="searchInput" type="text" placeholder="Search variables..." autocomplete="off" aria-label="Search variables" aria-expanded="false" aria-controls="variableDropdown">
+                <button class="clear-search" id="clearSearchBtn" type="button">Clear</button>
+              </div>
+              <div class="variable-dropdown" id="variableDropdown">
+                <div class="category-row" id="categoryFilters" aria-label="Filter variables by category"></div>
+                <div class="series-grid" id="seriesGrid" aria-live="polite"></div>
+              </div>
             </div>
           </div>
 
@@ -702,7 +729,7 @@
                 <p id="focusMeta" style="display:none"></p>
               </div>
 
-              <div id="mainChart" class="chart-loading">Loading chart...</div>
+              <div id="mainChart" class="main-chart chart-loading">Loading chart...</div>
 
               <div class="stats-grid">
                 <div class="stat">
@@ -827,37 +854,20 @@
         });
     }
 
-    const FIVE_FACTORS_ID = "__five_factors__";
-    const FIVE_FACTORS = [
-      { id: "leverage_factor",            label: "Leverage Factor",            color: "#dc2626" },
-      { id: "marketvalues_factor",        label: "Market Values Factor",       color: "#2563eb" },
-      { id: "liquidity_factor",           label: "Liquidity Factor",           color: "#9333ea" },
-      { id: "operatingactivities_factor", label: "Operating Activity Factor",  color: "#ea580c" },
-      { id: "profitability_factor",       label: "Profitability Factor",       color: "#16a34a" },
-    ];
-
     const cache = new Map();
-    const searchInput = document.getElementById("searchInput");
-    const dropdownList = document.getElementById("dropdownList");
-    const dropdownWrapper = document.getElementById("dropdownWrapper");
-    const focusName = document.getElementById("focusName");
-    const focusMeta = document.getElementById("focusMeta");
-    const chartNode = document.getElementById("mainChart");
-    const statStart = document.getElementById("statStart");
-    const statEnd = document.getElementById("statEnd");
-    const statFirst = document.getElementById("statFirst");
-    const statFirstDate = document.getElementById("statFirstDate");
-    const statLatest = document.getElementById("statLatest");
-    const statLatestDate = document.getElementById("statLatestDate");
-    const statCount = document.getElementById("statCount");
-    const downloadSeriesBtn = document.getElementById("downloadSeriesBtn");
 
-    let searchTerm = "";
-    let activeId = FIVE_FACTORS_ID;
-    let selectionNonce = 0;
-    let dropdownOpen = false;
-    let customStartDate = "";
-    let customEndDate = "";
+    const LABEL_OVERRIDES = {
+      pls_recession_concurrent: "Probability of Recession",
+      pls_recession_1m_lead: "Probability of Recession Next Month",
+      pls_recession_3m_lead: "Probability of Recession Next Quarter",
+      pls_recession_6m_lead: "Probability of Recession Next 6 Months",
+      pls_recession_3m_lag: "Probability of Recession 3 Months Ago",
+      pls_recession_6m_lag: "Probability of Recession 6 Months Ago",
+    };
+
+    function displayLabel(series) {
+      return LABEL_OVERRIDES[series.id] || series.label;
+    }
 
     function escapeHtml(value) {
       const text = String(value ?? "");
@@ -879,6 +889,17 @@
       if (Math.abs(value) >= 1000) return value.toLocaleString("en-US", { maximumFractionDigits: 2 });
       if (Math.abs(value) >= 1) return value.toLocaleString("en-US", { maximumFractionDigits: 4 });
       return value.toLocaleString("en-US", { maximumFractionDigits: 6 });
+    }
+
+    function slugifyName(value) {
+      return String(value || "series")
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "") || "series";
+    }
+
+    function csvTextForRows(rows) {
+      return ["date,value", ...rows.map((row) => `${row[0]},${row[1]}`)].join("\n");
     }
 
     function downsample(rows, maxPoints) {
@@ -928,72 +949,7 @@
       `;
     }
 
-    function getFilteredSeries() {
-      return SERIES.filter((series) => {
-        return !searchTerm || series.label.toLowerCase().includes(searchTerm) || series.file.toLowerCase().includes(searchTerm);
-      });
-    }
-
-    function renderDropdown() {
-      const filtered = getFilteredSeries();
-
-      if (!filtered.length && searchTerm) {
-        dropdownList.innerHTML = "<div class='dropdown-empty'>No variables match your filter.</div>";
-        return;
-      }
-
-      var fiveActive = activeId === FIVE_FACTORS_ID ? " active" : "";
-      var fiveMatchesSearch = !searchTerm || "corporate activity 5 factors".includes(searchTerm);
-      var fiveHtml = fiveMatchesSearch
-        ? '<div class="dropdown-item' + fiveActive + '" data-id="' + FIVE_FACTORS_ID + '">'
-          + '<div class="dropdown-item-label" style="color:#0b3c5d;font-weight:700;">Corporate Activity 5 Factors</div>'
-          + '<div class="dropdown-item-meta">Factors · All five PCA factors</div>'
-          + '</div>'
-        : '';
-
-      dropdownList.innerHTML = fiveHtml + filtered.map((series) => {
-        const activeClass = series.id === activeId ? " active" : "";
-        const entry = SERIES_DATA[series.id];
-        const preview = entry && Array.isArray(entry.rows) && entry.rows.length
-          ? sparklineSvg(entry.rows, "dropdown-item-sparkline")
-          : "";
-        return `
-          <div class="dropdown-item${activeClass}" data-id="${series.id}">
-            <div class="dropdown-item-label">${escapeHtml(series.label)}</div>
-            <div class="dropdown-item-meta">${escapeHtml(series.category)} · ${escapeHtml(series.file)}</div>
-            ${preview}
-          </div>
-        `;
-      }).join("");
-
-      const items = Array.from(dropdownList.querySelectorAll(".dropdown-item"));
-      items.forEach((item) => {
-        item.addEventListener("mousedown", (e) => {
-          e.preventDefault();
-          const id = item.getAttribute("data-id");
-          if (!id) return;
-          closeDropdown();
-          if (id === FIVE_FACTORS_ID) { setFiveFactors(); } else { setActiveSeries(id); }
-        });
-      });
-    }
-
-    function openDropdown() {
-      if (dropdownOpen) return;
-      dropdownOpen = true;
-      dropdownList.classList.add("open");
-      renderDropdown();
-    }
-
-    function closeDropdown() {
-      dropdownOpen = false;
-      dropdownList.classList.remove("open");
-      searchInput.value = "";
-    }
-
-    function filterRowsByDate(rows) {
-      const start = customStartDate || "";
-      const end = customEndDate || "";
+    function filterRowsByDate(rows, start, end) {
       if (!start && !end) return rows;
       return rows.filter((row) => {
         if (start && row[0] < start) return false;
@@ -1002,7 +958,7 @@
       });
     }
 
-    function renderFallbackChart(rows) {
+    function renderFallbackChart(chartNode, rows) {
       const sampled = downsample(rows, 360);
       const values = sampled.map((point) => point[1]);
       const min = Math.min(...values);
@@ -1033,331 +989,401 @@
       `;
     }
 
-    function setFiveFactors(keepDates) {
-      activeId = FIVE_FACTORS_ID;
-      selectionNonce += 1;
-      const thisNonce = selectionNonce;
+    function createExplorer(config) {
+      const filterFn = config.filter || (() => true);
+      const seriesList = SERIES.filter(filterFn);
 
-      focusName.textContent = "Corporate Activity 5 Factors";
-      focusMeta.textContent = "Accounting Variable Factors";
-      chartNode.classList.add("chart-loading");
-      chartNode.textContent = "Loading chart...";
+      const variablePicker = document.getElementById(config.pickerId);
+      const searchInput = document.getElementById(config.inputId);
+      const variableDropdown = document.getElementById(config.dropdownId);
+      const categoryFilters = document.getElementById(config.categoryFiltersId);
+      const seriesGrid = document.getElementById(config.seriesGridId);
+      const clearSearchBtn = document.getElementById(config.clearSearchBtnId);
+      const focusName = document.getElementById(config.focusNameId);
+      const focusMeta = document.getElementById(config.focusMetaId);
+      const chartNode = document.getElementById(config.chartId);
+      const statStart = document.getElementById(config.statStartId);
+      const statEnd = document.getElementById(config.statEndId);
+      const statFirst = document.getElementById(config.statFirstId);
+      const statFirstDate = document.getElementById(config.statFirstDateId);
+      const statLatest = document.getElementById(config.statLatestId);
+      const statLatestDate = document.getElementById(config.statLatestDateId);
+      const statCount = document.getElementById(config.statCountId);
+      const downloadSeriesBtn = document.getElementById(config.downloadBtnId);
 
-      downloadSeriesBtn.href = "Data_All.zip";
-      downloadSeriesBtn.setAttribute("download", "Data_All.zip");
-      downloadSeriesBtn.textContent = "Download All Data";
+      const categories = ["All", ...Array.from(new Set(seriesList.map((series) => series.category).filter(Boolean)))];
 
-      try {
-        var allTraces = [];
-        var globalMinDate = null, globalMaxDate = null;
-        var totalObs = 0;
+      let searchTerm = "";
+      let activeCategory = "All";
+      let activeId = null;
+      let dropdownOpen = false;
+      let selectionNonce = 0;
+      let activeDownloadUrl = "";
+      let customStartDate = "";
+      let customEndDate = "";
 
-        for (var fi = 0; fi < FIVE_FACTORS.length; fi++) {
-          var f = FIVE_FACTORS[fi];
-          var meta = SERIES.find(function(s) { return s.id === f.id; });
-          if (!meta) continue;
-          var loaded = loadSeries(meta);
-          var rows = filterRowsByDate(loaded.rows);
-          if (!rows.length) continue;
+      function getFilteredSeries() {
+        return seriesList.filter((series) => {
+          if (activeCategory !== "All" && series.category !== activeCategory) return false;
+          if (!searchTerm) return true;
+          const label = displayLabel(series).toLowerCase();
+          const category = series.category.toLowerCase();
+          const id = series.id.toLowerCase();
+          return label.includes(searchTerm) || category.includes(searchTerm) || id.includes(searchTerm);
+        });
+      }
 
-          if (!globalMinDate || rows[0][0] < globalMinDate) globalMinDate = rows[0][0];
-          if (!globalMaxDate || rows[rows.length - 1][0] > globalMaxDate) globalMaxDate = rows[rows.length - 1][0];
-          totalObs = Math.max(totalObs, rows.length);
+      function updateClearSearch() {
+        clearSearchBtn.classList.toggle("visible", Boolean(searchTerm));
+        clearSearchBtn.disabled = !searchTerm;
+      }
 
-          var plotRows = downsample(rows, 2200);
-          allTraces.push({
-            x: plotRows.map(function(r) { return r[0]; }),
-            y: plotRows.map(function(r) { return r[1]; }),
+      function openDropdown() {
+        if (dropdownOpen) return;
+        dropdownOpen = true;
+        variableDropdown.classList.add("open");
+        searchInput.setAttribute("aria-expanded", "true");
+      }
+
+      function closeDropdown() {
+        dropdownOpen = false;
+        variableDropdown.classList.remove("open");
+        searchInput.setAttribute("aria-expanded", "false");
+      }
+
+      function resetSearch() {
+        searchInput.value = "";
+        searchTerm = "";
+        updateClearSearch();
+        renderSeriesGrid();
+      }
+
+      function renderCategoryFilters() {
+        categoryFilters.innerHTML = categories.map((category) => {
+          const activeClass = category === activeCategory ? " active" : "";
+          return `
+            <button class="chip${activeClass}" type="button" data-category="${escapeHtml(category)}" aria-pressed="${category === activeCategory}">
+              ${escapeHtml(category)}
+            </button>
+          `;
+        }).join("");
+
+        Array.from(categoryFilters.querySelectorAll(".chip")).forEach((chip) => {
+          chip.addEventListener("click", (event) => {
+            event.stopPropagation();
+            const category = chip.getAttribute("data-category");
+            if (!category || category === activeCategory) return;
+            activeCategory = category;
+            renderCategoryFilters();
+            renderSeriesGrid();
+            openDropdown();
+          });
+        });
+      }
+
+      function renderSeriesGrid() {
+        const filtered = getFilteredSeries();
+
+        if (!filtered.length) {
+          seriesGrid.innerHTML = "<div class='series-empty'>No variables match your filter.</div>";
+          return;
+        }
+
+        seriesGrid.innerHTML = filtered.map((series) => {
+          const activeClass = series.id === activeId ? " active" : "";
+          const entry = SERIES_DATA[series.id];
+          const preview = entry && Array.isArray(entry.rows) && entry.rows.length
+            ? sparklineSvg(entry.rows, "sparkline")
+            : "";
+          return `
+            <button class="series-card${activeClass}" type="button" data-id="${escapeHtml(series.id)}">
+              <span class="series-copy">
+                <span class="series-name">${escapeHtml(displayLabel(series))}</span>
+              </span>
+              <span class="series-aside">
+                <span class="series-category">${escapeHtml(series.category)}</span>
+                ${preview}
+              </span>
+            </button>
+          `;
+        }).join("");
+
+        const items = Array.from(seriesGrid.querySelectorAll(".series-card"));
+        items.forEach((item) => {
+          item.addEventListener("click", (event) => {
+            event.stopPropagation();
+            const id = item.getAttribute("data-id");
+            if (!id) return;
+            setActiveSeries(id);
+            resetSearch();
+            closeDropdown();
+          });
+        });
+      }
+
+      function setActiveSeries(id, keepDates) {
+        const meta = seriesList.find((item) => item.id === id);
+        if (!meta) return;
+
+        activeId = id;
+        renderSeriesGrid();
+        selectionNonce += 1;
+        const thisNonce = selectionNonce;
+
+        focusName.textContent = displayLabel(meta);
+        focusMeta.textContent = meta.category;
+        chartNode.classList.add("chart-loading");
+        chartNode.textContent = "Loading chart...";
+
+        downloadSeriesBtn.href = "#";
+        downloadSeriesBtn.textContent = "Download This Series";
+
+        try {
+          const loaded = loadSeries(meta);
+          const allRows = loaded.rows;
+
+          if (activeDownloadUrl) URL.revokeObjectURL(activeDownloadUrl);
+          activeDownloadUrl = URL.createObjectURL(
+            new Blob([csvTextForRows(allRows)], { type: "text/csv;charset=utf-8" })
+          );
+          downloadSeriesBtn.href = activeDownloadUrl;
+          downloadSeriesBtn.setAttribute("download", `${slugifyName(displayLabel(meta))}.csv`);
+
+          if (!keepDates) {
+            customStartDate = "";
+            customEndDate = "";
+            statStart.value = allRows[0][0];
+            statEnd.value = allRows[allRows.length - 1][0];
+          }
+
+          const rows = filterRowsByDate(allRows, customStartDate, customEndDate);
+          if (!rows.length) {
+            chartNode.classList.add("chart-loading");
+            chartNode.textContent = "No data in selected date range.";
+            statFirst.textContent = "-";
+            statFirstDate.textContent = "";
+            statLatest.textContent = "-";
+            statLatestDate.textContent = "";
+            statCount.textContent = "0";
+            return;
+          }
+
+          const first = rows[0];
+          const latest = rows[rows.length - 1];
+          statFirst.textContent = formatValue(first[1]);
+          statFirstDate.textContent = formatDate(first[0]);
+          statLatest.textContent = formatValue(latest[1]);
+          statLatestDate.textContent = formatDate(latest[0]);
+          statCount.textContent = rows.length.toLocaleString("en-US");
+
+          chartNode.classList.remove("chart-loading");
+          renderFallbackChart(chartNode, rows);
+
+          const canUsePlotly = window.Plotly && typeof window.Plotly.newPlot === "function";
+          if (!canUsePlotly) return;
+
+          const plotRows = downsample(rows, 2200);
+          const x = plotRows.map((row) => row[0]);
+          const y = plotRows.map((row) => row[1]);
+
+          const trace = {
+            x,
+            y,
             type: "scatter",
             mode: "lines",
-            name: f.label,
-            line: { color: f.color, width: 2 },
-            hovertemplate: f.label + "<br>%{x}<br>%{y:.4f}<extra></extra>"
-          });
-        }
+            line: { color: "#0b3c5d", width: 2.1 },
+            hovertemplate: "%{x}<br>%{y:.6f}<extra></extra>"
+          };
 
-        if (!allTraces.length) {
-          chartNode.textContent = "Factor data not available.";
-          return;
-        }
+          const layout = {
+            margin: { l: 50, r: 16, t: 16, b: 42 },
+            paper_bgcolor: "#fcfdff",
+            plot_bgcolor: "#fcfdff",
+            xaxis: {
+              showgrid: true,
+              gridcolor: "#e4eaf1",
+              tickfont: { color: "#465a70", size: 11 },
+              rangeslider: { visible: true, bgcolor: "#eef3f8", bordercolor: "#d7e0ea", thickness: 0.1 }
+            },
+            yaxis: {
+              showgrid: true,
+              gridcolor: "#e4eaf1",
+              tickfont: { color: "#465a70", size: 11 },
+              autorange: true
+            },
+            font: { family: "Manrope, sans-serif", color: "#0f1c2a", size: 12 },
+            showlegend: false,
+            shapes: nberShapes(rows[0][0], rows[rows.length - 1][0])
+          };
 
-        if (!keepDates) {
-          customStartDate = "";
-          customEndDate = "";
-          statStart.value = globalMinDate;
-          statEnd.value = globalMaxDate;
-        }
+          const plotlyConfig = {
+            responsive: true,
+            displaylogo: false,
+            modeBarButtonsToRemove: ["lasso2d", "select2d", "toggleSpikelines", "autoScale2d"]
+          };
 
-        statFirst.textContent = "-";
-        statFirstDate.textContent = formatDate(globalMinDate);
-        statLatest.textContent = "-";
-        statLatestDate.textContent = formatDate(globalMaxDate);
-        statCount.textContent = totalObs.toLocaleString("en-US");
-
-        chartNode.classList.remove("chart-loading");
-        chartNode.innerHTML = "";
-
-        var canUsePlotly = window.Plotly && typeof window.Plotly.newPlot === "function";
-        if (!canUsePlotly) {
-          chartNode.textContent = "Plotly not loaded.";
-          return;
-        }
-
-        var layout = {
-          margin: { l: 50, r: 16, t: 16, b: 42 },
-          paper_bgcolor: "#fcfdff",
-          plot_bgcolor: "#fcfdff",
-          xaxis: {
-            showgrid: true,
-            gridcolor: "#e4eaf1",
-            tickfont: { color: "#465a70", size: 11 },
-            rangeslider: { visible: true, bgcolor: "#eef3f8", bordercolor: "#d7e0ea", thickness: 0.1 }
-          },
-          yaxis: {
-            showgrid: true,
-            gridcolor: "#e4eaf1",
-            tickfont: { color: "#465a70", size: 11 },
-            autorange: true
-          },
-          font: { family: "Manrope, sans-serif", color: "#0f1c2a", size: 12 },
-          showlegend: true,
-          legend: { orientation: "h", y: 1.06, x: 0.5, xanchor: "center", font: { size: 14 } },
-          shapes: nberShapes(globalMinDate, globalMaxDate)
-        };
-
-        var config = {
-          responsive: true,
-          displaylogo: false,
-          modeBarButtonsToRemove: ["lasso2d", "select2d", "toggleSpikelines", "autoScale2d"]
-        };
-
-        Promise.resolve()
-          .then(function() { return window.Plotly.purge(chartNode); })
-          .catch(function() {})
-          .then(function() { return window.Plotly.newPlot(chartNode, allTraces, layout, config); })
-          .then(function() {
+          const attemptId = `${thisNonce}:${meta.id}:${Date.now()}`;
+          chartNode.dataset.plotAttempt = attemptId;
+          const timeoutMs = 2200;
+          const timeout = setTimeout(() => {
             if (thisNonce !== selectionNonce) return;
-            chartNode.on("plotly_relayout", function(evt) {
-              var x0 = evt["xaxis.range[0]"] || (evt["xaxis.range"] && evt["xaxis.range"][0]);
-              var x1 = evt["xaxis.range[1]"] || (evt["xaxis.range"] && evt["xaxis.range"][1]);
-              if (x0 == null || x1 == null) return;
-              var allY = [];
-              allTraces.forEach(function(tr) {
-                tr.x.forEach(function(xi, i) { if (xi >= x0 && xi <= x1) allY.push(tr.y[i]); });
+            if (chartNode.dataset.plotAttempt !== attemptId) return;
+            chartNode.dataset.plotAttempt = "";
+            renderFallbackChart(chartNode, rows);
+          }, timeoutMs);
+
+          Promise.resolve()
+            .then(() => window.Plotly.purge(chartNode))
+            .catch(() => {})
+            .then(() => window.Plotly.newPlot(chartNode, [trace], layout, plotlyConfig))
+            .then(() => {
+              if (thisNonce !== selectionNonce) return;
+              if (chartNode.dataset.plotAttempt !== attemptId) return;
+              chartNode.dataset.plotAttempt = "";
+              clearTimeout(timeout);
+
+              chartNode.on("plotly_relayout", function (evt) {
+                let x0 = evt["xaxis.range[0]"] || (evt["xaxis.range"] && evt["xaxis.range"][0]);
+                let x1 = evt["xaxis.range[1]"] || (evt["xaxis.range"] && evt["xaxis.range"][1]);
+                if (x0 == null || x1 == null) return;
+                const visibleY = y.filter((_, i) => x[i] >= x0 && x[i] <= x1);
+                if (!visibleY.length) return;
+                const yMin = Math.min(...visibleY);
+                const yMax = Math.max(...visibleY);
+                const pad = (yMax - yMin) * 0.05 || 0.001;
+                window.Plotly.relayout(chartNode, {
+                  "yaxis.range": [yMin - pad, yMax + pad],
+                  "yaxis.autorange": false
+                });
               });
-              if (!allY.length) return;
-              var yMin = Math.min.apply(null, allY);
-              var yMax = Math.max.apply(null, allY);
-              var pad = (yMax - yMin) * 0.05 || 0.001;
-              window.Plotly.relayout(chartNode, { "yaxis.range": [yMin - pad, yMax + pad], "yaxis.autorange": false });
+            })
+            .catch((plotError) => {
+              if (thisNonce !== selectionNonce) return;
+              if (chartNode.dataset.plotAttempt !== attemptId) return;
+              chartNode.dataset.plotAttempt = "";
+              clearTimeout(timeout);
+              console.error(plotError);
+              renderFallbackChart(chartNode, rows);
             });
-          })
-          .catch(function(err) { console.error(err); });
-
-      } catch (error) {
-        console.error(error);
-        chartNode.classList.add("chart-loading");
-        chartNode.textContent = "Could not load factor data.";
-      }
-    }
-
-    function setActiveSeries(id, keepDates) {
-      if (id === FIVE_FACTORS_ID) { setFiveFactors(keepDates); return; }
-
-      const meta = SERIES.find((item) => item.id === id);
-      if (!meta) return;
-
-      activeId = id;
-      selectionNonce += 1;
-      const thisNonce = selectionNonce;
-
-      focusName.textContent = meta.label;
-      focusMeta.textContent = `${meta.category} | ${meta.file}`;
-      chartNode.classList.add("chart-loading");
-      chartNode.textContent = "Loading chart...";
-
-      const seriesHref = `Data/${meta.file}`;
-      downloadSeriesBtn.href = seriesHref;
-      downloadSeriesBtn.setAttribute("download", meta.file);
-      downloadSeriesBtn.textContent = "Download This Series";
-
-      try {
-        const loaded = loadSeries(meta);
-        const allRows = loaded.rows;
-
-        if (!keepDates) {
-          customStartDate = "";
-          customEndDate = "";
-          statStart.value = allRows[0][0];
-          statEnd.value = allRows[allRows.length - 1][0];
-        }
-
-        const rows = filterRowsByDate(allRows);
-        if (!rows.length) {
+        } catch (error) {
+          console.error(error);
           chartNode.classList.add("chart-loading");
-          chartNode.textContent = "No data in selected date range.";
+          chartNode.textContent = "Could not load this variable.";
+          statStart.value = "";
+          statEnd.value = "";
           statFirst.textContent = "-";
           statFirstDate.textContent = "";
           statLatest.textContent = "-";
           statLatestDate.textContent = "";
-          statCount.textContent = "0";
-          return;
+          statCount.textContent = "-";
         }
-
-        const first = rows[0];
-        const latest = rows[rows.length - 1];
-        statFirst.textContent = formatValue(first[1]);
-        statFirstDate.textContent = formatDate(first[0]);
-        statLatest.textContent = formatValue(latest[1]);
-        statLatestDate.textContent = formatDate(latest[0]);
-        statCount.textContent = rows.length.toLocaleString("en-US");
-
-        chartNode.classList.remove("chart-loading");
-        renderFallbackChart(rows);
-
-        const canUsePlotly = window.Plotly && typeof window.Plotly.newPlot === "function";
-        if (!canUsePlotly) return;
-
-        const plotRows = downsample(rows, 2200);
-        const x = plotRows.map((row) => row[0]);
-        const y = plotRows.map((row) => row[1]);
-
-        const trace = {
-          x,
-          y,
-          type: "scatter",
-          mode: "lines",
-          line: { color: "#0b3c5d", width: 2.1 },
-          hovertemplate: "%{x}<br>%{y:.6f}<extra></extra>"
-        };
-
-        const layout = {
-          margin: { l: 50, r: 16, t: 16, b: 42 },
-          paper_bgcolor: "#fcfdff",
-          plot_bgcolor: "#fcfdff",
-          xaxis: {
-            showgrid: true,
-            gridcolor: "#e4eaf1",
-            tickfont: { color: "#465a70", size: 11 },
-            rangeslider: { visible: true, bgcolor: "#eef3f8", bordercolor: "#d7e0ea", thickness: 0.1 }
-          },
-          yaxis: {
-            showgrid: true,
-            gridcolor: "#e4eaf1",
-            tickfont: { color: "#465a70", size: 11 },
-            autorange: true
-          },
-          font: { family: "Manrope, sans-serif", color: "#0f1c2a", size: 12 },
-          showlegend: false,
-          shapes: nberShapes(rows[0][0], rows[rows.length - 1][0])
-        };
-
-        const config = {
-          responsive: true,
-          displaylogo: false,
-          modeBarButtonsToRemove: ["lasso2d", "select2d", "toggleSpikelines", "autoScale2d"]
-        };
-
-        const attemptId = `${thisNonce}:${meta.id}:${Date.now()}`;
-        chartNode.dataset.plotAttempt = attemptId;
-        const timeoutMs = 2200;
-        const timeout = setTimeout(() => {
-          if (thisNonce !== selectionNonce) return;
-          if (chartNode.dataset.plotAttempt !== attemptId) return;
-          chartNode.dataset.plotAttempt = "";
-          renderFallbackChart(rows);
-        }, timeoutMs);
-
-        Promise.resolve()
-          .then(() => window.Plotly.purge(chartNode))
-          .catch(() => {})
-          .then(() => window.Plotly.newPlot(chartNode, [trace], layout, config))
-          .then(() => {
-            if (thisNonce !== selectionNonce) return;
-            if (chartNode.dataset.plotAttempt !== attemptId) return;
-            chartNode.dataset.plotAttempt = "";
-            clearTimeout(timeout);
-
-            /* Auto-rescale y-axis when x-range changes (rangeslider drag / zoom) */
-            chartNode.on("plotly_relayout", function (evt) {
-              let x0 = evt["xaxis.range[0]"] || (evt["xaxis.range"] && evt["xaxis.range"][0]);
-              let x1 = evt["xaxis.range[1]"] || (evt["xaxis.range"] && evt["xaxis.range"][1]);
-              if (x0 == null || x1 == null) return;
-              const visibleY = y.filter((_, i) => x[i] >= x0 && x[i] <= x1);
-              if (!visibleY.length) return;
-              const yMin = Math.min(...visibleY);
-              const yMax = Math.max(...visibleY);
-              const pad = (yMax - yMin) * 0.05 || 0.001;
-              window.Plotly.relayout(chartNode, {
-                "yaxis.range": [yMin - pad, yMax + pad],
-                "yaxis.autorange": false
-              });
-            });
-          })
-          .catch((plotError) => {
-            if (thisNonce !== selectionNonce) return;
-            if (chartNode.dataset.plotAttempt !== attemptId) return;
-            chartNode.dataset.plotAttempt = "";
-            clearTimeout(timeout);
-            console.error(plotError);
-            renderFallbackChart(rows);
-          });
-      } catch (error) {
-        console.error(error);
-        chartNode.classList.add("chart-loading");
-        chartNode.textContent = `Could not load ${meta.file}.`;
-        statStart.value = "";
-        statEnd.value = "";
-        statFirst.textContent = "-";
-        statFirstDate.textContent = "";
-        statLatest.textContent = "-";
-        statLatestDate.textContent = "";
-        statCount.textContent = "-";
       }
+
+      function setupFilters() {
+        renderCategoryFilters();
+        renderSeriesGrid();
+        updateClearSearch();
+
+        searchInput.addEventListener("focus", () => {
+          openDropdown();
+        });
+
+        searchInput.addEventListener("click", () => {
+          openDropdown();
+        });
+
+        searchInput.addEventListener("input", () => {
+          searchTerm = searchInput.value.trim().toLowerCase();
+          openDropdown();
+          updateClearSearch();
+          renderSeriesGrid();
+        });
+
+        searchInput.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            const filtered = getFilteredSeries();
+            if (filtered.length) {
+              setActiveSeries(filtered[0].id);
+              resetSearch();
+              closeDropdown();
+            }
+          } else if (e.key === "Escape") {
+            resetSearch();
+            closeDropdown();
+          }
+        });
+
+        clearSearchBtn.addEventListener("click", (event) => {
+          event.stopPropagation();
+          resetSearch();
+          openDropdown();
+          searchInput.focus();
+        });
+
+        document.addEventListener("click", (event) => {
+          const eventPath = typeof event.composedPath === "function" ? event.composedPath() : [];
+          if (eventPath.includes(variablePicker) || variablePicker.contains(event.target)) return;
+          closeDropdown();
+        });
+
+        statStart.addEventListener("change", () => {
+          customStartDate = statStart.value;
+          if (activeId) setActiveSeries(activeId, true);
+        });
+
+        statEnd.addEventListener("change", () => {
+          customEndDate = statEnd.value;
+          if (activeId) setActiveSeries(activeId, true);
+        });
+      }
+
+      function init() {
+        setupFilters();
+        const startId = config.defaultId && seriesList.some((s) => s.id === config.defaultId)
+          ? config.defaultId
+          : (seriesList[0] && seriesList[0].id);
+        if (startId) setActiveSeries(startId);
+      }
+
+      return { init, getChartNode: () => chartNode };
     }
 
-    function setupFilters() {
-      searchInput.addEventListener("focus", () => {
-        searchInput.select();
-        searchTerm = "";
-        openDropdown();
-      });
+    function updateRecessionSummary() {
+      const summaryEl = document.getElementById("recessionSummary");
+      if (!summaryEl) return;
 
-      searchInput.addEventListener("input", () => {
-        searchTerm = searchInput.value.trim().toLowerCase();
-        openDropdown();
-        renderDropdown();
-      });
+      function getLatest(id) {
+        const entry = SERIES_DATA[id];
+        if (!entry || !Array.isArray(entry.rows) || !entry.rows.length) return null;
+        return entry.rows[entry.rows.length - 1];
+      }
 
-      searchInput.addEventListener("blur", () => {
-        closeDropdown();
-        searchTerm = "";
-      });
+      function pct(row) {
+        if (!row) return "—";
+        const v = row[1];
+        if (!Number.isFinite(v)) return "—";
+        return (v * 100).toFixed(1) + "%";
+      }
 
-      searchInput.addEventListener("keydown", (e) => {
-        if (e.key === "Enter") {
-          e.preventDefault();
-          const filtered = getFilteredSeries();
-          if (filtered.length) {
-            closeDropdown();
-            setActiveSeries(filtered[0].id);
-            searchInput.blur();
-          }
-        } else if (e.key === "Escape") {
-          closeDropdown();
-          searchInput.blur();
-        }
-      });
+      function fmtDDMMYYYY(dateStr) {
+        if (!dateStr) return "—";
+        const parts = String(dateStr).split("-");
+        if (parts.length !== 3) return dateStr;
+        return `${parts[2]}-${parts[1]}-${parts[0]}`;
+      }
 
-      statStart.addEventListener("change", () => {
-        customStartDate = statStart.value;
-        if (activeId === FIVE_FACTORS_ID) { setFiveFactors(true); } else { setActiveSeries(activeId, true); }
-      });
+      const concurrent = getLatest("pls_recession_concurrent");
+      const lead1m = getLatest("pls_recession_1m_lead");
+      const lead3m = getLatest("pls_recession_3m_lead");
+      const lead6m = getLatest("pls_recession_6m_lead");
 
-      statEnd.addEventListener("change", () => {
-        customEndDate = statEnd.value;
-        if (activeId === FIVE_FACTORS_ID) { setFiveFactors(true); } else { setActiveSeries(activeId, true); }
-      });
+      const asOfDate = concurrent ? fmtDDMMYYYY(concurrent[0]) : "—";
+
+      summaryEl.innerHTML =
+        `Estimated U.S. recession probabilities based on aggregate corporate activity remain low. ` +
+        `As of <strong>${asOfDate}</strong>, the probability of currently being in a recession is <strong>${pct(concurrent)}</strong>, ` +
+        `with estimates of <strong>${pct(lead1m)}</strong> over the next month, <strong>${pct(lead3m)}</strong> over the next quarter, and <strong>${pct(lead6m)}</strong> over the next six months.`;
     }
 
     function initializePage() {
@@ -1367,13 +1393,36 @@
         `Updated ${today.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}`;
 
       if (!SERIES.length) {
-        chartNode.classList.add("chart-loading");
-        chartNode.textContent = "Data bundle missing.";
+        document.querySelectorAll(".main-chart").forEach((chart) => {
+          chart.classList.add("chart-loading");
+          chart.textContent = "Data bundle missing.";
+        });
         return;
       }
 
-      setupFilters();
-      setFiveFactors();
+      const variableExplorer = createExplorer({
+        pickerId: "variablePicker",
+        inputId: "searchInput",
+        dropdownId: "variableDropdown",
+        categoryFiltersId: "categoryFilters",
+        seriesGridId: "seriesGrid",
+        clearSearchBtnId: "clearSearchBtn",
+        focusNameId: "focusName",
+        focusMetaId: "focusMeta",
+        chartId: "mainChart",
+        statStartId: "statStart",
+        statEndId: "statEnd",
+        statFirstId: "statFirst",
+        statFirstDateId: "statFirstDate",
+        statLatestId: "statLatest",
+        statLatestDateId: "statLatestDate",
+        statCountId: "statCount",
+        downloadBtnId: "downloadSeriesBtn",
+        defaultId: "pls_recession_concurrent"
+      });
+      variableExplorer.init();
+
+      updateRecessionSummary();
     }
 
     window.addEventListener("load", initializePage);
