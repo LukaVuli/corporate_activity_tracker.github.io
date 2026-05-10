@@ -1,0 +1,30 @@
+# Corporate Activity Tracker
+
+Corporate Activity Tracker turns firm-level 10-Q filings into high-frequency indicators of U.S. macroeconomic conditions. The site provides interactive time-series plots and downloadable data for corporate fundamentals, accounting ratios, recession probability estimates, GDP growth estimates, and industrial production growth estimates, all are real time series. 
+
+## Primary URLs
+
+- Homepage and variable explorer: https://corporateactivitytracker.com/
+- Full data download: https://corporateactivitytracker.com/Data_All.zip
+- Working paper: https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4922676
+
+## Key Content
+
+- About: Describes the Corporate Activity Tracker methodology and its use of 10-Q filings.
+- Recession probability summary: Reports current and forward-looking U.S. recession probability estimates.
+- Variable Explorer: Searchable interface for inspecting and downloading individual time series.
+- Authors: Davide Pettenuzzo, Riccardo Sabbatucci, Allan Timmermann, and Luka Vulicevic.
+
+## Data Families
+
+- Fundamentals: Cash, cash and short-term investments, cost of goods sold, depreciation and amortization, EBIT, net income, revenues, total assets, total debt, and working capital.
+- Ratios: Book-to-market, price-to-earnings, cash, current, debt-to-equity, debt, gross margin, investment-to-capital, interest coverage, markup, payout, RNOA, ROA, ROE, and trade credit ratios.
+- PLS series: Recession probability, GDP growth, and IP growth estimates based on aggregate corporate activity.
+
+## Citation
+
+Pettenuzzo, Davide, Riccardo Sabbatucci, Allan Timmermann, and Luka Vulicevic. "Financial statements and macroeconomic dynamics." Available at SSRN 4922676, 2024.
+
+## Contact
+
+For inquiries, contact contact@corporateactivitytracker.com.
