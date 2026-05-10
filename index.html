@@ -865,8 +865,16 @@
       pls_recession_6m_lag: "Probability of Recession 6 Months Ago",
     };
 
+    const CATEGORY_LABEL_OVERRIDES = {
+      PLS: "Recession Probability"
+    };
+
     function displayLabel(series) {
       return LABEL_OVERRIDES[series.id] || series.label;
+    }
+
+    function displayCategory(category) {
+      return CATEGORY_LABEL_OVERRIDES[category] || category;
     }
 
     function escapeHtml(value) {
@@ -1027,7 +1035,7 @@
           if (activeCategory !== "All" && series.category !== activeCategory) return false;
           if (!searchTerm) return true;
           const label = displayLabel(series).toLowerCase();
-          const category = series.category.toLowerCase();
+          const category = displayCategory(series.category).toLowerCase();
           const id = series.id.toLowerCase();
           return label.includes(searchTerm) || category.includes(searchTerm) || id.includes(searchTerm);
         });
@@ -1063,7 +1071,7 @@
           const activeClass = category === activeCategory ? " active" : "";
           return `
             <button class="chip${activeClass}" type="button" data-category="${escapeHtml(category)}" aria-pressed="${category === activeCategory}">
-              ${escapeHtml(category)}
+              ${escapeHtml(displayCategory(category))}
             </button>
           `;
         }).join("");
@@ -1101,7 +1109,7 @@
                 <span class="series-name">${escapeHtml(displayLabel(series))}</span>
               </span>
               <span class="series-aside">
-                <span class="series-category">${escapeHtml(series.category)}</span>
+                <span class="series-category">${escapeHtml(displayCategory(series.category))}</span>
                 ${preview}
               </span>
             </button>
@@ -1131,7 +1139,7 @@
         const thisNonce = selectionNonce;
 
         focusName.textContent = displayLabel(meta);
-        focusMeta.textContent = meta.category;
+        focusMeta.textContent = displayCategory(meta.category);
         chartNode.classList.add("chart-loading");
         chartNode.textContent = "Loading chart...";
 
@@ -1366,11 +1374,9 @@
         return (v * 100).toFixed(1) + "%";
       }
 
-      function fmtDDMMYYYY(dateStr) {
+      function formatSummaryDate(dateStr) {
         if (!dateStr) return "—";
-        const parts = String(dateStr).split("-");
-        if (parts.length !== 3) return dateStr;
-        return `${parts[2]}-${parts[1]}-${parts[0]}`;
+        return formatDate(dateStr);
       }
 
       const concurrent = getLatest("pls_recession_concurrent");
@@ -1378,12 +1384,11 @@
       const lead3m = getLatest("pls_recession_3m_lead");
       const lead6m = getLatest("pls_recession_6m_lead");
 
-      const asOfDate = concurrent ? fmtDDMMYYYY(concurrent[0]) : "—";
+      const asOfDate = concurrent ? formatSummaryDate(concurrent[0]) : "—";
 
       summaryEl.innerHTML =
-        `Estimated U.S. recession probabilities based on aggregate corporate activity remain low. ` +
-        `As of <strong>${asOfDate}</strong>, the probability of currently being in a recession is <strong>${pct(concurrent)}</strong>, ` +
-        `with estimates of <strong>${pct(lead1m)}</strong> over the next month, <strong>${pct(lead3m)}</strong> over the next quarter, and <strong>${pct(lead6m)}</strong> over the next six months.`;
+        `What is the probability of recession? As of <strong>${asOfDate}</strong>, the Corporate Activity Tracker estimates the probability that the U.S. economy is currently in recession at <strong>${pct(concurrent)}</strong>. ` +
+        `Its recession probability forecasts are <strong>${pct(lead1m)}</strong> for the next month, <strong>${pct(lead3m)}</strong> for the next quarter, and <strong>${pct(lead6m)}</strong> for the next six months, based on aggregate corporate activity.`;
     }
 
     function initializePage() {
