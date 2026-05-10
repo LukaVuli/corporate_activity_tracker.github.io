@@ -879,9 +879,9 @@
 
     function displaySeriesTag(series) {
       const id = series && series.id ? series.id : "";
-      if (id.startsWith("pls_recession_")) return "Recession Probability";
+      if (id.startsWith("pls_recession_")) return "Recession";
       if (id.startsWith("pls_gdp_growth_")) return "GDP Growth";
-      if (id.startsWith("pls_ip_growth_")) return "Industrial Production Growth";
+      if (id.startsWith("pls_ip_growth_")) return "IP Growth";
       return displayCategory(series.category);
     }
 
