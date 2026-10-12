@@ -955,6 +955,7 @@
             <div class="focus-panel">
               <div class="focus-head">
                 <h3 id="focusName">Loading variable...</h3>
+                <p id="focusDesc"></p>
                 <p id="focusMeta" style="display:none"></p>
               </div>
 
@@ -1086,6 +1087,7 @@
 
   <script src="caba_data.js"></script>
   <script src="recession_data.js"></script>
+  <script src="variable_descriptions.js"></script>
   <script>
     const BUNDLE = window.CABA_DATA || { meta: [], seriesData: {} };
     const SERIES = Array.isArray(BUNDLE.meta) ? BUNDLE.meta : [];
@@ -1109,6 +1111,13 @@
     }
 
     const cache = new Map();
+
+    /* Short per-variable descriptions — loaded from variable_descriptions.js */
+    const VARIABLE_DESCRIPTIONS = window.VARIABLE_DESCRIPTIONS || {};
+
+    function descriptionFor(series) {
+      return VARIABLE_DESCRIPTIONS[series.id] || "";
+    }
 
     const LABEL_OVERRIDES = {
       pls_recession_concurrent: "Probability of Recession",
@@ -1269,6 +1278,7 @@
       const clearSearchBtn = document.getElementById(config.clearSearchBtnId);
       const focusName = document.getElementById(config.focusNameId);
       const focusMeta = document.getElementById(config.focusMetaId);
+      const focusDesc = document.getElementById(config.focusDescId);
       const chartNode = document.getElementById(config.chartId);
       const statStart = document.getElementById(config.statStartId);
       const statEnd = document.getElementById(config.statEndId);
@@ -1400,6 +1410,7 @@
         const thisNonce = selectionNonce;
 
         focusName.textContent = displayLabel(meta);
+        focusDesc.textContent = descriptionFor(meta);
         focusMeta.textContent = displaySeriesTag(meta);
         chartNode.classList.add("chart-loading");
         chartNode.textContent = "Loading chart...";
@@ -1689,6 +1700,7 @@
         clearSearchBtnId: "clearSearchBtn",
         focusNameId: "focusName",
         focusMetaId: "focusMeta",
+        focusDescId: "focusDesc",
         chartId: "mainChart",
         statStartId: "statStart",
         statEndId: "statEnd",
